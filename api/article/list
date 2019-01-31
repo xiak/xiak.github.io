@@ -1,0 +1,38 @@
+{
+  workSummary: {
+    title: 'Kubernetes安装手册',
+    tags: [
+      {
+        name: 'Kubernetes',
+        link: 'https://blog.xiak.com/t/kubernetes',
+      },
+      {
+        name: 'Cloud Native',
+        link: 'https://blog.xiak.com/t/cloud-native',
+      },
+    ],
+    catalogs: [
+      {
+        name: '1 选择组件',
+        link: 'https://www.xiak.com/article/1',
+      },
+      {
+        name: '2 配置服务器环境',
+        link: 'https://www.xiak.com/article/2',
+      },
+      {
+        name: '3 设置集群全局变量',
+        link: 'https://www.xiak.com/article/3',
+      },
+      {
+        name: '4 创建集群CA证书及密钥',
+        link: 'https://www.xiak.com/article/4',
+      },
+      {
+        name: '5 搭建高可用etcd集群',
+        link: 'https://www.xiak.com/article/5',
+      },
+    ],
+    pubTime: '2019年01月31日 13:36',
+  },
+}
