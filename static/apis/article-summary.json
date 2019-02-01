@@ -1,0 +1,25 @@
+{
+  "title": "Kubernetes安装手册",
+  "tags": [
+    {
+      "name": "Kubernetes",
+      "link": "https://xiak.com/article/kubernetes/Summary"
+    }
+  ],
+  "catalogs": [
+    {
+      "name": "0 - 目录",
+      "link": "Summary"
+    },
+    {
+      "name": "1 - 组件选择",
+      "link": "1-Preparation"
+    },
+    {
+      "name": "2 - 配置操作系统",
+      "link": "2-OS-Config"
+    }
+  ],
+  "intro": "/static/images/janurschelbanu-defender-starc-citizen-1.jpg",
+  "pubTime": "2019年01月31日 13:36"
+}
