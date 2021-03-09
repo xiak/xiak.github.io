@@ -2,10 +2,10 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>联系我 on XIAK | Community</title>
-    <link>https://xiak.com/contact/</link>
+    <link>https://xiak.github.com/contact/</link>
     <description>Recent content in 联系我 on XIAK | Community</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <copyright>Copyright &amp;copy; 2021 XIAK 保留所有权利</copyright><atom:link href="https://xiak.com/contact/index.xml" rel="self" type="application/rss+xml" />
+    <copyright>Copyright &amp;copy; 2021 XIAK 保留所有权利</copyright><atom:link href="https://xiak.github.com/contact/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
