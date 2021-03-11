@@ -13,11 +13,11 @@
   <meta property="og:image" content="https://xiak.com/images/blog/light.jpg" />
   
   <meta property="og:title" content="字符串 URL 化" />
-<meta property="og:description" content="此题目为 leetcode 上的面试题 Leetcode 链接 https://leetcode-cn.com/problems/string-to-url-lcci/ 题干 URL化。编写一种方法，将字" />
+<meta property="og:description" content="Leetcode 链接 https://leetcode-cn.com/problems/string-to-url-lcci/ 题干 URL化。编写一种方法，将字符串中的空格全部替换" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://xiak.com/algorithm/string-to-url-lcci/" /><meta property="article:section" content="algorithm" />
-<meta property="article:published_time" content="2021-03-10T18:39:00&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-10T18:39:00&#43;08:00" />
+<meta property="article:published_time" content="2021-03-11T19:50:00&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-11T19:50:00&#43;08:00" />
 
 
   
@@ -120,7 +120,7 @@
 					<h2 class="post-title">字符串 URL 化</h2>
 					<div class="post-meta">
 						<ul>
-              <li><i class="ion-calendar"></i> March 10, 2021</li>
+              <li><i class="ion-calendar"></i> March 11, 2021</li>
               <li><i class="ion-android-people"></i>
                 提交人
                 
@@ -140,8 +140,7 @@
 						<img class="img-responsive" src="/images/blog/light.jpg" alt="字符串 URL 化">
 					</div>
 					<div class="post-content post-excerpt">
-						<p>此题目为 <a href="https://leetcode-cn.com">leetcode</a> 上的面试题</p>
-<h3 id="leetcode-链接">Leetcode 链接</h3>
+						<h3 id="leetcode-链接">Leetcode 链接</h3>
 <p><a href="https://leetcode-cn.com/problems/string-to-url-lcci/">https://leetcode-cn.com/problems/string-to-url-lcci/</a></p>
 <h3 id="题干">题干</h3>
 <p>URL化。编写一种方法，将字符串中的空格全部替换为%20。假定该字符串尾部有足够的空间存放新增字符，并且知道字符串的“真实”长度。（注：用Java实现的话，请使用字符数组实现，以便直接在数组上操作。）</p>
@@ -156,20 +155,83 @@
 字符串长度在 [0, 500000] 范围内。</p>
 </blockquote>
 <h3 id="思路">思路</h3>
-<ol>
-<li>分析 golang 底层字符串结构</li>
-<li>在字符串的基础上替换空格</li>
-</ol>
 <p>数据结构</p>
-<pre><code>
-</code></pre><p>算法</p>
-<pre><code>
-</code></pre><h3 id="实现">实现</h3>
-<pre><code>func replaceSpaces(S string, length int) string {
-    
+<p>golang 中的 <code>string</code> 本质为<code>固定长度</code>的<code>只读</code>的切片</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">type</span> <span class="nx">StringHeader</span> <span class="kd">struct</span> <span class="p">{</span>
+  <span class="nx">Data</span> <span class="kt">uintptr</span>
+  <span class="nx">Len</span>  <span class="kt">int</span>
+<span class="p">}</span>
+</code></pre></div><p><img src="../../../static/images/algorithm/golang-string.png" alt="golang-string"></p>
+<p>要访问字符串中某个或者某段字符可以通过以下方式:</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">x</span> <span class="o">:=</span> <span class="s">&#34;Mr Xiak&#34;</span>
+<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">x</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="c1">// &#34;77 88&#34; (&#39;M&#39; and &#39;X&#39;)
+</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span> <span class="c1">// &#34;Mr&#34;
+</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="c1">// &#34;Xiak&#34;
+</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[:])</span>  <span class="c1">// &#34;Mr Xiak&#34;
+</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hi&#34;</span> <span class="o">+</span> <span class="nx">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span> <span class="c1">// &#34;Hi Xiak&#34;
+</span></code></pre></div><p>要修改字符串必须先将 <code>string</code> 转换为 <code>[]byte</code> 或者 <code>[]rune</code></p>
+<p>算法</p>
+<h3 id="实现">实现</h3>
+<p>这里总结了 <code>4</code> 种实现方法</p>
+<p>使用 <code>golang</code> 库 <code>strings.Replace</code></p>
+<pre><code>func ReplaceSpaces_1(S string, length int) string {
+	return strings.Replace(S[:length], &quot; &quot;, &quot;%20&quot;, -1)
 }
+</code></pre><p>使用 <code>golang</code> 库 <code>bytes.Buffer</code></p>
+<pre><code>func ReplaceSpaces_2(S string, length int) string {
+	var buffer bytes.Buffer
+	for i := 0; i &lt; length; i++ {
+		if S[i] == ' ' {
+			buffer.WriteString(&quot;%20&quot;)
+		} else {
+			buffer.WriteByte(S[i])
+		}
+	}
+	return buffer.String()
+}
+</code></pre><div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">ReplaceSpaces_3</span><span class="p">(</span><span class="nx">S</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">length</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="nx">t</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">length</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+	<span class="nx">w</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span> <span class="p">{</span>
+			<span class="nb">copy</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">:(</span><span class="nx">w</span><span class="o">+</span><span class="mi">3</span><span class="p">)],</span> <span class="s">&#34;%20&#34;</span><span class="p">)</span>
+			<span class="nx">w</span> <span class="o">+=</span> <span class="mi">3</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="p">=</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+			<span class="nx">w</span><span class="o">++</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">w</span><span class="p">])</span>
+<span class="p">}</span>
+</code></pre></div><p>第 4 种是第三种方法的变种</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">SliceByteToString</span><span class="p">(</span><span class="nx">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="kt">string</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">b</span><span class="p">))</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">ReplaceSpaces_4</span><span class="p">(</span><span class="nx">S</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">length</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="nx">t</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">length</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+	<span class="nx">w</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span> <span class="p">{</span>
+			<span class="nb">copy</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">:(</span><span class="nx">w</span><span class="o">+</span><span class="mi">3</span><span class="p">)],</span> <span class="s">&#34;%20&#34;</span><span class="p">)</span>
+			<span class="nx">w</span> <span class="o">+=</span> <span class="mi">3</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="p">=</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+			<span class="nx">w</span><span class="o">++</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nf">SliceByteToString</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">w</span><span class="p">])</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="benchmark">Benchmark</h3>
+<pre><code>go test  -benchmem -test.bench=&quot;.*&quot;
+goos: windows
+goarch: amd64
+BenchmarkReplaceSpaces_1-4      10319277               115 ns/op              64 B/op          2 allocs/op
+BenchmarkReplaceSpaces_2-4       9039098               130 ns/op              96 B/op          2 allocs/op
+BenchmarkReplaceSpaces_3-4      15924559                72.8 ns/op            80 B/op          2 allocs/op
+BenchmarkReplaceSpaces_4-4      25308819                46.3 ns/op            48 B/op          1 allocs/op
 </code></pre><h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
-<p><a href="https://leetcode-cn.com/submissions/detail/83261636/">https://leetcode-cn.com/submissions/detail/83261636/</a></p>
+<p><a href="https://leetcode-cn.com/submissions/detail/153905677/">https://leetcode-cn.com/submissions/detail/153905677/</a></p>
 
 					</div>
 					<div class="post-comments">
@@ -187,7 +249,7 @@
       </a>
       <div class="media-body">
         <h4 class="media-heading"><a href="https://xiak.com/algorithm/string-to-url-lcci/">字符串 URL 化</a></h4>
-        <p>此题目为 leetcode 上的面试题 Leetcode …</p>
+        <p>Leetcode …</p>
       </div>
     </div>
     
