@@ -162,15 +162,13 @@
   <span class="nx">Len</span>  <span class="kt">int</span>
 <span class="p">}</span>
 </code></pre></div><p><img src="/images/algorithm/golang-string.png" alt="golang-string"></p>
-<p>要访问字符串中某个或者某段字符可以通过以下方式:</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="nx">x</span> <span class="o">:=</span> <span class="s">&#34;Mr Xiak&#34;</span>
-<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">x</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="c1">// &#34;77 88&#34; (&#39;M&#39; and &#39;X&#39;)
-</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span> <span class="c1">// &#34;Mr&#34;
-</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="c1">// &#34;Xiak&#34;
-</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">x</span><span class="p">[:])</span>  <span class="c1">// &#34;Mr Xiak&#34;
-</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;hi&#34;</span> <span class="o">+</span> <span class="nx">x</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span> <span class="c1">// &#34;Hi Xiak&#34;
-</span></code></pre></div><p>要修改字符串必须先将 <code>string</code> 转换为 <code>[]byte</code> 或者 <code>[]rune</code></p>
+<p>要修改字符串必须先将 <code>string</code> 转换为 <code>[]byte</code> 或者 <code>[]rune</code></p>
 <p>算法</p>
+<ol>
+<li>直接用类库 <code>strings.Replace</code> 或则 <code>bytes.Buffer</code></li>
+<li>常规算法： 新申请一个存储空间 (3倍 length 大小)，遍历字符串 <code>length</code> 长度, 把每个字符重新写入到新的内存空间中</li>
+<li>常规算法优化: 因为涉及到类型转换: <code>[]byte</code> 转 <code>string</code>, 其中需要内存的拷贝，可以使用 <code>*(*string)(unsafe.Pointer(&amp;b))</code> 来实现零拷贝转换</li>
+</ol>
 <h3 id="实现">实现</h3>
 <p>这里总结了 <code>4</code> 种实现方法</p>
 <p>使用 <code>golang</code> 库 <code>strings.Replace</code></p>
@@ -189,7 +187,8 @@
 	}
 	return buffer.String()
 }
-</code></pre><div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">ReplaceSpaces_3</span><span class="p">(</span><span class="nx">S</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">length</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+</code></pre><p>常规算法</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">ReplaceSpaces_3</span><span class="p">(</span><span class="nx">S</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">length</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
 	<span class="nx">t</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">length</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
 	<span class="nx">w</span> <span class="o">:=</span> <span class="mi">0</span>
 	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
@@ -203,7 +202,7 @@
 	<span class="p">}</span>
 	<span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">w</span><span class="p">])</span>
 <span class="p">}</span>
-</code></pre></div><p>第 4 种是第三种方法的变种</p>
+</code></pre></div><p>常规算法丶改</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">SliceByteToString</span><span class="p">(</span><span class="nx">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="kt">string</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">b</span><span class="p">))</span>
 <span class="p">}</span>
@@ -230,7 +229,26 @@ BenchmarkReplaceSpaces_1-4      10319277               115 ns/op              64
 BenchmarkReplaceSpaces_2-4       9039098               130 ns/op              96 B/op          2 allocs/op
 BenchmarkReplaceSpaces_3-4      15924559                72.8 ns/op            80 B/op          2 allocs/op
 BenchmarkReplaceSpaces_4-4      25308819                46.3 ns/op            48 B/op          1 allocs/op
-</code></pre><h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
+</code></pre><p>可以看到 常规算法丶改各方面性能都是最优的, 而且少了一次内存分配</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// src/runtime/string.go
+</span><span class="c1">// The constant is known to the compiler.
+</span><span class="c1">// There is no fundamental theory behind this number.
+</span><span class="c1"></span><span class="kd">const</span> <span class="nx">tmpStringBufSize</span> <span class="p">=</span> <span class="mi">32</span>
+<span class="kd">type</span> <span class="nx">tmpBuf</span> <span class="p">[</span><span class="nx">tmpStringBufSize</span><span class="p">]</span><span class="kt">byte</span>
+<span class="kd">func</span> <span class="nf">slicebytetostring</span><span class="p">(</span><span class="nx">buf</span> <span class="o">*</span><span class="nx">tmpBuf</span><span class="p">,</span> <span class="nx">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">str</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="o">......</span>
+    <span class="k">if</span> <span class="nx">buf</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">p</span> <span class="p">=</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">buf</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">p</span> <span class="p">=</span> <span class="nf">mallocgc</span><span class="p">(</span><span class="nb">uintptr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">)),</span> <span class="kc">nil</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="o">......</span>
+    <span class="nf">memmove</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="nx">slice</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">b</span><span class="p">))).</span><span class="nx">array</span><span class="p">,</span> <span class="nb">uintptr</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">)))</span>
+    <span class="o">......</span>
+<span class="p">}</span>
+</code></pre></div><p>从上面 <code>golang</code> 的源代码可以看出, 通过 <code>string([]byte)</code> 把 <code>[]byte</code> 强制转换为 <code>string</code> 时候, 只要 <code>[]byte</code> 长度超过 32，就会通过 <code>mallocgc</code> 申请新的内存, 然后通过 <code>memmove</code> 做一次内存搬运</p>
+<p>而通过 <code>*(*string)(unsafe.Pointer(&amp;b))</code> 作类型转换时，其本质只是改变了指针指向而已，没有做内存申请和搬运，所以性能要好很多</p>
+<h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
 <p><a href="https://leetcode-cn.com/submissions/detail/153905677/">https://leetcode-cn.com/submissions/detail/153905677/</a></p>
 
 					</div>
