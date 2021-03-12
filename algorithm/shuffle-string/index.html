@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh"><head>
   <meta charset="utf-8">
-  <title>字符串 URL 化</title>
+  <title>重新排列字符串</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,14 +10,14 @@
   <meta name="generator" content="Hugo 0.81.0" />
   
   
-  <meta property="og:image" content="https://xiak.com/images/blog/light.jpg" />
+  <meta property="og:image" content="https://xiak.com/images/blog/book.jpg" />
   
-  <meta property="og:title" content="字符串 URL 化" />
-<meta property="og:description" content="Leetcode 链接 https://leetcode-cn.com/problems/string-to-url-lcci/ 题干 URL化。编写一种方法，将字符串中的空格全部替换" />
+  <meta property="og:title" content="重新排列字符串" />
+<meta property="og:description" content="Leetcode 链接 https://leetcode-cn.com/problems/shuffle-string/ 题干 给你一个字符串 s 和一个 长度相同 的整数数组 indices 。 请你" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiak.com/algorithm/string-to-url-lcci/" /><meta property="article:section" content="algorithm" />
-<meta property="article:published_time" content="2021-03-11T19:50:00&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-11T19:50:00&#43;08:00" />
+<meta property="og:url" content="https://xiak.com/algorithm/shuffle-string/" /><meta property="article:section" content="algorithm" />
+<meta property="article:published_time" content="2021-03-12T19:17:00&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-12T19:17:00&#43;08:00" />
 
 
   
@@ -104,7 +104,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="block">
-          <h1>字符串 URL 化</h1>
+          <h1>重新排列字符串</h1>
           <p></p>
         </div>
       </div>
@@ -117,10 +117,10 @@
 		<div class="row">
 			<div class="col-md-8">
 				<div class="post post-single">
-					<h2 class="post-title">字符串 URL 化</h2>
+					<h2 class="post-title">重新排列字符串</h2>
 					<div class="post-meta">
 						<ul>
-              <li><i class="ion-calendar"></i> March 11, 2021</li>
+              <li><i class="ion-calendar"></i> March 12, 2021</li>
               <li><i class="ion-android-people"></i>
                 提交人
                 
@@ -131,104 +131,82 @@
                 
                 <a href="/tags/leetcode">Leetcode</a>
 								
-                , <a href="/tags/interview">Interview</a>
-								
               </li>
             </ul>
 					</div>
 					<div class="post-thumb">
-						<img class="img-responsive" src="/images/blog/light.jpg" alt="字符串 URL 化">
+						<img class="img-responsive" src="/images/blog/book.jpg" alt="重新排列字符串">
 					</div>
 					<div class="post-content post-excerpt">
 						<h3 id="leetcode-链接">Leetcode 链接</h3>
-<p><a href="https://leetcode-cn.com/problems/string-to-url-lcci/">https://leetcode-cn.com/problems/string-to-url-lcci/</a></p>
+<p><a href="https://leetcode-cn.com/problems/shuffle-string/">https://leetcode-cn.com/problems/shuffle-string/</a></p>
 <h3 id="题干">题干</h3>
-<p>URL化。编写一种方法，将字符串中的空格全部替换为%20。假定该字符串尾部有足够的空间存放新增字符，并且知道字符串的“真实”长度。（注：用Java实现的话，请使用字符数组实现，以便直接在数组上操作。）</p>
+<p>给你一个字符串 s 和一个 长度相同 的整数数组 indices 。</p>
+<p>请你重新排列字符串 s ，其中第 i 个字符需要移动到 indices[i] 指示的位置。</p>
+<p>返回重新排列后的字符串。</p>
 <p>示例 1：</p>
-<pre><code>输入：&quot;Mr John Smith    &quot;, 13
-输出：&quot;Mr%20John%20Smith&quot;
+<p><img src="/images/algorithm/shuffle-string.jpg" alt="shuffle-string"></p>
+<pre><code>输入：s = &quot;codeleet&quot;, indices = [4,5,6,7,0,2,1,3]
+输出：&quot;leetcode&quot;
+解释：如图所示，&quot;codeleet&quot; 重新排列后变为 &quot;leetcode&quot; 。
 </code></pre><p>示例 2：</p>
-<pre><code>输入：&quot;               &quot;, 5
-输出：&quot;%20%20%20%20%20&quot;
+<pre><code>输入：s = &quot;abc&quot;, indices = [0,1,2]
+输出：&quot;abc&quot;
+解释：重新排列后，每个字符都还留在原来的位置上。
+</code></pre><p>示例 3：</p>
+<pre><code>输入：s = &quot;aiohn&quot;, indices = [3,1,4,2,0]
+输出：&quot;nihao&quot;
+</code></pre><p>示例 4：</p>
+<pre><code>输入：s = &quot;aaiougrt&quot;, indices = [4,0,2,6,7,3,1,5]
+输出：&quot;arigatou&quot;
+</code></pre><p>示例 5：</p>
+<pre><code>输入：s = &quot;art&quot;, indices = [1,0,2]
+输出：&quot;rat&quot;
 </code></pre><blockquote>
-<p>提示：
-字符串长度在 [0, 500000] 范围内。</p>
+<p>提示：</p>
+<ul>
+<li>s.length == indices.length == n</li>
+<li>1 &lt;= n &lt;= 100</li>
+<li>s 仅包含小写英文字母。</li>
+<li>0 &lt;= indices[i] &lt; n</li>
+<li>indices 的所有的值都是唯一的（也就是说，indices 是整数 0 到 n - 1 形成的一组排列）</li>
+</ul>
 </blockquote>
 <h3 id="思路">思路</h3>
-<p>数据结构</p>
-<p>golang 中的 <code>string</code> 本质为<code>固定长度</code>的<code>只读</code>的切片</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">type</span> <span class="nx">StringHeader</span> <span class="kd">struct</span> <span class="p">{</span>
-  <span class="nx">Data</span> <span class="kt">uintptr</span>
-  <span class="nx">Len</span>  <span class="kt">int</span>
-<span class="p">}</span>
-</code></pre></div><p><img src="/images/algorithm/golang-string.png" alt="golang-string"></p>
-<p>要修改字符串必须先将 <code>string</code> 转换为 <code>[]byte</code> 或者 <code>[]rune</code></p>
 <p>算法</p>
 <ol>
-<li>直接用类库 <code>strings.Replace</code> 或则 <code>bytes.Buffer</code></li>
-<li>常规算法： 新申请一个存储空间 (3倍 length 大小)，遍历字符串 <code>length</code> 长度, 把每个字符重新写入到新的内存空间中</li>
+<li>常规算法： 新申请一个存储空间 (indices 大小)，遍历 <code>indices</code> , 把每个字符重新写入到新的内存空间中</li>
 <li>常规算法优化: 因为涉及到类型转换: <code>[]byte</code> 转 <code>string</code>, 其中需要内存的拷贝，可以使用 <code>*(*string)(unsafe.Pointer(&amp;b))</code> 来实现零拷贝转换</li>
 </ol>
 <h3 id="实现">实现</h3>
-<p>这里总结了 <code>4</code> 种实现方法</p>
-<p>使用 <code>golang</code> 库 <code>strings.Replace</code></p>
-<pre><code>func ReplaceSpaces_1(S string, length int) string {
-	return strings.Replace(S[:length], &quot; &quot;, &quot;%20&quot;, -1)
+<p>常规算法</p>
+<pre><code>func restoreString(s string, indices []int) string {
+    l := len(indices)
+    n := make([]byte, l)
+    for i, v := range indices{
+        n[v] = s[i]
+    }
+    return string(n[0:l])
 }
-</code></pre><p>使用 <code>golang</code> 库 <code>bytes.Buffer</code></p>
-<pre><code>func ReplaceSpaces_2(S string, length int) string {
-	var buffer bytes.Buffer
-	for i := 0; i &lt; length; i++ {
-		if S[i] == ' ' {
-			buffer.WriteString(&quot;%20&quot;)
-		} else {
-			buffer.WriteByte(S[i])
-		}
-	}
-	return buffer.String()
-}
-</code></pre><p>常规算法</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">ReplaceSpaces_3</span><span class="p">(</span><span class="nx">S</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">length</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
-	<span class="nx">t</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">length</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
-	<span class="nx">w</span> <span class="o">:=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span> <span class="p">{</span>
-			<span class="nb">copy</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">:(</span><span class="nx">w</span><span class="o">+</span><span class="mi">3</span><span class="p">)],</span> <span class="s">&#34;%20&#34;</span><span class="p">)</span>
-			<span class="nx">w</span> <span class="o">+=</span> <span class="mi">3</span>
-		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-			<span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="p">=</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
-			<span class="nx">w</span><span class="o">++</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-	<span class="k">return</span> <span class="nb">string</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">w</span><span class="p">])</span>
-<span class="p">}</span>
-</code></pre></div><p>常规算法丶改</p>
+</code></pre><p>常规算法丶改</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">SliceByteToString</span><span class="p">(</span><span class="nx">b</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
 	<span class="k">return</span> <span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="kt">string</span><span class="p">)(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">b</span><span class="p">))</span>
 <span class="p">}</span>
 
-<span class="kd">func</span> <span class="nf">ReplaceSpaces_4</span><span class="p">(</span><span class="nx">S</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">length</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
-	<span class="nx">t</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">length</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
-	<span class="nx">w</span> <span class="o">:=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-		<span class="k">if</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span> <span class="p">{</span>
-			<span class="nb">copy</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">:(</span><span class="nx">w</span><span class="o">+</span><span class="mi">3</span><span class="p">)],</span> <span class="s">&#34;%20&#34;</span><span class="p">)</span>
-			<span class="nx">w</span> <span class="o">+=</span> <span class="mi">3</span>
-		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-			<span class="nx">t</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="p">=</span> <span class="nx">S</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
-			<span class="nx">w</span><span class="o">++</span>
-		<span class="p">}</span>
-	<span class="p">}</span>
-	<span class="k">return</span> <span class="nf">SliceByteToString</span><span class="p">(</span><span class="nx">t</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">w</span><span class="p">])</span>
+<span class="kd">func</span> <span class="nf">restoreString</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">indices</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+    <span class="nx">l</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">indices</span><span class="p">)</span>
+    <span class="nx">n</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">l</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">indices</span><span class="p">{</span>
+        <span class="nx">n</span><span class="p">[</span><span class="nx">v</span><span class="p">]</span> <span class="p">=</span> <span class="nx">s</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nf">SliceByteToString</span><span class="p">(</span><span class="nx">n</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="nx">l</span><span class="p">])</span>
 <span class="p">}</span>
 </code></pre></div><h3 id="benchmark">Benchmark</h3>
 <pre><code>go test  -benchmem -test.bench=&quot;.*&quot;
 goos: windows
 goarch: amd64
-BenchmarkReplaceSpaces_1-4      10319277               115 ns/op              64 B/op          2 allocs/op
-BenchmarkReplaceSpaces_2-4       9039098               130 ns/op              96 B/op          2 allocs/op
-BenchmarkReplaceSpaces_3-4      15924559                72.8 ns/op            80 B/op          2 allocs/op
-BenchmarkReplaceSpaces_4-4      25308819                46.3 ns/op            48 B/op          1 allocs/op
+BenchmarkShuffleString_1-4      24535662                46.9 ns/op            16 B/op          2 allocs/op
+BenchmarkShuffleString_2-4      43719510                27.5 ns/op             8 B/op          1 allocs/op
 </code></pre><p>可以看到 常规算法丶改各方面性能都是最优的, 而且少了一次内存分配</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="c1">// src/runtime/string.go
 </span><span class="c1">// The constant is known to the compiler.
@@ -249,7 +227,7 @@ BenchmarkReplaceSpaces_4-4      25308819                46.3 ns/op            48
 </code></pre></div><p>从上面 <code>golang</code> 的源代码可以看出, 通过 <code>string([]byte)</code> 把 <code>[]byte</code> 强制转换为 <code>string</code> 时候, 只要 <code>[]byte</code> 长度超过 32，就会通过 <code>mallocgc</code> 申请新的内存, 然后通过 <code>memmove</code> 做一次内存搬运</p>
 <p>而通过 <code>*(*string)(unsafe.Pointer(&amp;b))</code> 作类型转换时，其本质只是改变了指针指向而已，没有做内存申请和搬运，所以性能要好很多</p>
 <h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
-<p><a href="https://leetcode-cn.com/submissions/detail/153905677/">https://leetcode-cn.com/submissions/detail/153905677/</a></p>
+<p><a href="https://leetcode-cn.com/submissions/detail/154381214/">https://leetcode-cn.com/submissions/detail/154381214/</a></p>
 
 					</div>
 					<div class="post-comments">
