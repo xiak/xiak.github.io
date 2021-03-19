@@ -18,12 +18,21 @@
     </item>
     
     <item>
+      <title>链表设计</title>
+      <link>https://xiak.com/algorithm/list/</link>
+      <pubDate>Tue, 16 Mar 2021 19:22:06 +0800</pubDate>
+      
+      <guid>https://xiak.com/algorithm/list/</guid>
+      <description>Leetcode 链接 707. 设计链表 题干 设计链表的实现。您可以选择使用单链表或双</description>
+    </item>
+    
+    <item>
       <title>重新排列字符串</title>
       <link>https://xiak.com/algorithm/shuffle-string/</link>
       <pubDate>Fri, 12 Mar 2021 19:17:00 +0800</pubDate>
       
       <guid>https://xiak.com/algorithm/shuffle-string/</guid>
-      <description>Leetcode 链接 https://leetcode-cn.com/problems/shuffle-string/ 题干 给你一个字符串 s 和一个 长度相同 的整数数组 indices 。 请你</description>
+      <description>Leetcode 链接 1528. 重新排列字符串 题干 给你一个字符串 s 和一个 长度相同 的整</description>
     </item>
     
     <item>
@@ -32,7 +41,7 @@
       <pubDate>Thu, 11 Mar 2021 19:50:00 +0800</pubDate>
       
       <guid>https://xiak.com/algorithm/string-to-url-lcci/</guid>
-      <description>Leetcode 链接 https://leetcode-cn.com/problems/string-to-url-lcci/ 题干 URL化。编写一种方法，将字符串中的空格全部替换</description>
+      <description>Leetcode 链接 面试题 01.03. URL化 题干 URL化。编写一种方法，将字符串中</description>
     </item>
     
   </channel>
