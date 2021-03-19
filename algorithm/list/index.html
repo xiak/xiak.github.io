@@ -303,6 +303,7 @@
 </ul>
 <p>在指定位置删除一个节点, 这种情况同样需要遍历</p>
 <p>时间复杂度为 <code>O(n)</code>, 空间复杂度为 <code>O(1)</code></p>
+<p><img src="/images/algorithm/list-delete-node-at-index.png" alt="list-delete-node-at-index"></p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="p">(</span><span class="nx">this</span> <span class="o">*</span><span class="nx">MyLinkedList</span><span class="p">)</span> <span class="nf">DeleteAtIndex</span><span class="p">(</span><span class="nx">index</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// 注意这里是 &gt;= (比如 100 个节点, index 范围为 0-99, 当 index == 100 时已经越界)
 </span><span class="c1"></span>    <span class="k">if</span> <span class="nx">index</span> <span class="o">&gt;=</span> <span class="nx">this</span><span class="p">.</span><span class="nx">length</span> <span class="p">{</span>
@@ -322,7 +323,7 @@
 </code></pre></div><ul>
 <li><code>Get(index)</code>: 获取链表中第 index 个节点的值。如果索引无效，则返回-1。</li>
 </ul>
-<p>获取指定位置的节点信息, 需要遍历链表</p>
+<p>获取指定位置的节点信息, 需要遍历链表, 找到位置返回节点值即可</p>
 <p>时间复杂度为 <code>O(n)</code>, 空间复杂度为 <code>O(1)</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="p">(</span><span class="nx">this</span> <span class="o">*</span><span class="nx">MyLinkedList</span><span class="p">)</span> <span class="nf">Get</span> <span class="p">(</span><span class="nx">index</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
     <span class="k">if</span> <span class="nx">index</span> <span class="o">&gt;=</span> <span class="nx">this</span><span class="p">.</span><span class="nx">length</span> <span class="p">{</span>
