@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh"><head>
   <meta charset="utf-8">
-  <title>反转链表</title>
+  <title>Leetcode</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,14 +10,10 @@
   <meta name="generator" content="Hugo 0.81.0" />
   
   
-  <meta property="og:image" content="https://xiak.com/images/blog/web-browse.jpg" />
-  
-  <meta property="og:title" content="反转链表" />
-<meta property="og:description" content="Leetcode 链接 206. 反转链表 题干 反转一个单链表。 示例 1： 输入: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL 输出: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiak.com/algorithm/reverse-list/" /><meta property="article:section" content="algorithm" />
-<meta property="article:published_time" content="2021-03-16T19:22:06&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-16T19:22:06&#43;08:00" />
+  <meta property="og:title" content="Leetcode" />
+<meta property="og:description" content="Xiak&#39;s Blog" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xiak.com/tags/leetcode/" />
 
 
   
@@ -99,12 +95,12 @@
   </div>
 </header>
 
-<section class="page-title bg-2" style="background-image: url('https://xiak.com/images/featue-bg.jpg');">
+<section class="page-title bg-2" style="background-image: url('https://xiak.com');">
   <div class="container">
     <div class="row">
       <div class="col-md-12">
         <div class="block">
-          <h1>反转链表</h1>
+          <h1>Leetcode</h1>
           <p></p>
         </div>
       </div>
@@ -112,15 +108,22 @@
   </div>
 </section>
 
-<section class="page-wrapper">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-8">
-				<div class="post post-single">
-					<h2 class="post-title">反转链表</h2>
-					<div class="post-meta">
-						<ul>
-              <li><i class="ion-calendar"></i> March 16, 2021</li>
+<div class="page-wrapper">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        
+        
+        <div class="post">
+          <div class="post-media post-thumb">
+            <a href="https://xiak.com/algorithm/string-to-url-lcci/">
+              <img src="/images/blog/light.jpg" alt="字符串 URL 化">
+            </a>
+          </div>
+          <h3 class="post-title"><a href="https://xiak.com/algorithm/string-to-url-lcci/">字符串 URL 化</a></h3>
+          <div class="post-meta">
+            <ul>
+              <li><i class="ion-calendar"></i> March 11, 2021</li>
               <li><i class="ion-android-people"></i>
                 提交人
                 
@@ -131,105 +134,69 @@
                 
                 <a href="/tags/leetcode">Leetcode</a>
 								
-                , <a href="/tags/list">List</a>
+                , <a href="/tags/interview">Interview</a>
 								
               </li>
             </ul>
-					</div>
-					<div class="post-thumb">
-						<img class="img-responsive" src="/images/blog/web-browse.jpg" alt="反转链表">
-					</div>
-					<div class="post-content post-excerpt">
-						<h3 id="leetcode-链接">Leetcode 链接</h3>
-<p><a href="https://leetcode-cn.com/problems/reverse-linked-list/">206. 反转链表</a></p>
-<h3 id="题干">题干</h3>
-<p>反转一个单链表。</p>
-<p>示例 1：</p>
-<pre><code>输入: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL
-输出: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL
-</code></pre><blockquote>
-<p>进阶：你可以迭代或递归地反转链表。你能否用两种方法解决这道题？</p>
-</blockquote>
-<h3 id="思路">思路</h3>
-<p>第一种方法: 通过自下而上的 <code>迭代</code> 实现</p>
-<p>迭代比较好理解, 从第一个 <code>Node</code> 开始逐个反转 <code>Node</code> 指针, 时间复杂度为 <code>O(N)</code>, 空间复杂度为 <code>O(1)</code></p>
-<p><img src="/images/algorithm/reverse-list.png" alt="reverse-list"></p>
-<p>第二种方法: 通过自上而下的 <code>递归</code> 实现</p>
-<p>递归比较绕, 计算机程序是通过栈实现递归, 人脑压栈出栈, 思考不了几层就容易晕掉, 所以不要去思考递归细节</p>
-<p>写递归的关键就是分析递归函数的意义, 找出递推公式以及递归终止条件</p>
-<ul>
-<li>递归函数意义: 输入链表头节点指针 <code>head</code>, 返回反转后的头节点指针 <code>newHead</code></li>
-</ul>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kd">func</span> <span class="nf">reverse</span><span class="p">(</span><span class="nx">head</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">)</span> <span class="o">*</span><span class="nx">ListNode</span> <span class="p">{</span>
-    <span class="o">......</span>
-    <span class="k">return</span> <span class="nx">newHead</span>
-<span class="p">}</span>
-</code></pre></div><ul>
-<li>递推公式: 链表反转, 可以想象为一个节点 <code>head</code> 和它之后的链表的头节点 <code>head.Next</code>, 尾节点 <code>newHead</code> 之间的关系</li>
-</ul>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="mf">1.</span> <span class="nx">head</span> <span class="o">-</span><span class="p">&gt;</span> <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="o">-</span><span class="p">&gt;</span> <span class="nx">newHead</span> <span class="o">-</span><span class="p">&gt;</span> <span class="kc">nil</span>
-<span class="mf">2.</span> <span class="nx">head</span> <span class="o">-</span><span class="p">&gt;</span> <span class="nf">reverse</span><span class="p">(</span><span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="o">-</span><span class="p">&gt;</span> <span class="nx">newHead</span> <span class="o">-</span><span class="p">&gt;</span> <span class="kc">nil</span><span class="p">)</span>
-<span class="mf">3.</span> <span class="nx">head</span> <span class="o">-</span><span class="p">&gt;</span> <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="o">&lt;-</span> <span class="nx">newHead</span>
-               <span class="p">|</span>
-               <span class="nx">v</span>
-              <span class="kc">nil</span>
-</code></pre></div><ul>
-<li>递归终止条件: <code>head.Next == nil</code></li>
-</ul>
-<p>整个递归过程如图所示</p>
-<p><img src="/images/algorithm/reverse-list-recursion.png" alt="reverse-list"></p>
-<h3 id="实现">实现</h3>
-<p>迭代</p>
-<pre><code>/**
- * Definition for singly-linked list.
- * type ListNode struct {
- *     Val int
- *     Next *ListNode
- * }
- */
-func reverseList(head *ListNode) *ListNode {
-    var pre, cur *ListNode = nil, head
-    for cur != nil {
-        head = head.Next
-        cur.Next = pre
-        pre = cur
-        cur = head
-    }
-    return pre
-}
-</code></pre><p>递归</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="cm">/**
-</span><span class="cm"> * Definition for singly-linked list.
-</span><span class="cm"> * type ListNode struct {
-</span><span class="cm"> *     Val int
-</span><span class="cm"> *     Next *ListNode
-</span><span class="cm"> * }
-</span><span class="cm"> */</span>
-<span class="kd">func</span> <span class="nf">reverseList</span><span class="p">(</span><span class="nx">head</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">)</span> <span class="o">*</span><span class="nx">ListNode</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="nx">head</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">||</span> <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">head</span>
-    <span class="p">}</span>
-    <span class="nx">newHead</span> <span class="o">:=</span> <span class="nf">reverseList</span><span class="p">(</span><span class="nx">head</span><span class="p">.</span><span class="nx">Next</span><span class="p">)</span>
-    <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">head</span>
-    <span class="nx">head</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="kc">nil</span>
-    <span class="k">return</span> <span class="nx">newHead</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="benchmark">Benchmark</h3>
-<pre><code>迭代: 执行用时: 4 ms, 内存消耗: 2.5 MB
-递归: 执行用时: 4 ms, 内存消耗: 3 MB
-</code></pre><p>时间复杂度都为 <code>O(N)</code></p>
-<p>迭代为原地算法, 空间复杂度为 <code>O(1)</code>, 递归需要申请栈空间, 空间复杂度为 <code>O(N)</code>, 所以递归更占内存</p>
-<p>如果考虑效率和成本, 反转链表算法用迭代更好.</p>
-<h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
-<p><a href="https://leetcode-cn.com/submissions/detail/155533737/">迭代</a></p>
-<p><a href="https://leetcode-cn.com/submissions/detail/156025979/">递归</a></p>
-
-					</div>
-					<div class="post-comments">
+          </div>
+          <div class="post-content">
+            <p>Leetcode 链接 面试题 01.03. URL化 题干 URL化。编写一种方法，将字符串中</p>
+            <a href="https://xiak.com/algorithm/string-to-url-lcci/" class="btn btn-main">查看更多</a>
+          </div>
+        </div>
+        
+        
+				
+				
+				
+				
+				
+				
+				
+				<nav class="text-center">
+					<ul class="pagination post-pagination">
 						
-					</div>
-				</div>
-			</div>
+						
+						<li>
+							<a href="/tags/leetcode/" class="page-link">上一页</a>
+            </li>
+            
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						<li class="">
+							<a href="/tags/leetcode/">
+								1
+							</a>
+						</li>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						<li class=" active ">
+							<a href="/tags/leetcode/page/2/">
+								2
+							</a>
+						</li>
+						
+						
+						
+						
+					</ul>
+				</nav>
+				
+      </div>
       <div class="col-md-4">
         <aside class="sidebar"><div class="widget widget-latest-post">
     <h4 class="widget-title">最近提交</h4>
@@ -289,9 +256,9 @@ func reverseList(head *ListNode) *ListNode {
   </div></aside>
 
       </div>
-		</div>
-	</div>
-</section>
+    </div>
+  </div>
+</div>
 
 <footer class="footer">
 	<div class="container">

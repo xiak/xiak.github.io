@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+  <meta charset="utf-8">
+  <title>两数相加: 常规算法和原地算法</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Xiak&#39;s Blog">
+  <meta name="author" content="Xiak">
+  <meta name="generator" content="Hugo 0.81.0" />
+  
+  
+  <meta property="og:image" content="https://xiak.com/images/blog/work.jpg" />
+  
+  <meta property="og:title" content="两数相加: 常规算法和原地算法" />
+<meta property="og:description" content="Leetcode 链接 2. 两数相加 题干 给你两个 非空 的链表，表示两个非负的整数。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiak.com/algorithm/add-two-numbers-1/" /><meta property="article:section" content="algorithm" />
+<meta property="article:published_time" content="2021-03-22T16:30:00&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-22T16:30:00&#43;08:00" />
+
+
+  
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/bootstrap/bootstrap.min.css" media='screen'>
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/Ionicons/css/ionicons.min.css" >
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/magnific-popup/magnific-popup.min.css" >
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/slick/slick.css" >
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://xiak.com/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://xiak.com/images/favicon.png" type="image/x-icon">
+  <link rel="icon" href="https://xiak.com/images/favicon.png" type="image/x-icon">
+
+</head><body>
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+
+<header class="navigation">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        
+        <nav class="navbar">
+          
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+              <img src="https://xiak.com/images/logo.png" alt="XIAK | Community" width="100px" class="img-responsive">
+            </a>
+          </div>
+          
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">主页</a></li>
+              
+              
+              
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                  aria-expanded="false">博客 <span class="ion-ios-arrow-down"></span></a>
+                <ul class="dropdown-menu">
+                  
+                  <li><a href="/algorithm">算法</a></li>
+                  
+                </ul>
+              </li>
+              
+              
+              
+              <li><a href="/contact">联系我</a></li>
+              
+              
+
+              
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-title bg-2" style="background-image: url('https://xiak.com/images/featue-bg.jpg');">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="block">
+          <h1>两数相加: 常规算法和原地算法</h1>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-wrapper">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="post post-single">
+					<h2 class="post-title">两数相加: 常规算法和原地算法</h2>
+					<div class="post-meta">
+						<ul>
+              <li><i class="ion-calendar"></i> March 22, 2021</li>
+              <li><i class="ion-android-people"></i>
+                提交人
+                
+                <a class="text-primary" href="/author/xiak">Xiak</a>
+                
+              </li>
+              <li><i class="ion-pricetags"></i> 
+                
+                <a href="/tags/leetcode">Leetcode</a>
+								
+                , <a href="/tags/list">List</a>
+								
+              </li>
+            </ul>
+					</div>
+					<div class="post-thumb">
+						<img class="img-responsive" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+					</div>
+					<div class="post-content post-excerpt">
+						<h3 id="leetcode-链接">Leetcode 链接</h3>
+<p><a href="https://leetcode-cn.com/problems/add-two-numbers/">2. 两数相加</a></p>
+<h3 id="题干">题干</h3>
+<p>给你两个 <code>非空</code> 的链表，表示两个非负的整数。它们每位数字都是按照 <code>逆序</code> 的方式存储的，并且每个节点只能存储 <code>一位</code> 数字。</p>
+<p>请你将两个数相加，并以相同形式返回一个表示和的链表。</p>
+<p>你可以假设除了数字 <code>0</code> 之外，这两个数都不会以 <code>0</code> 开头。</p>
+<p>示例 1：</p>
+<p><img src="/images/algorithm/add-two-num-1.jpg" alt="add-two-numbers"></p>
+<pre><code>输入：l1 = [2,4,3], l2 = [5,6,4]
+输出：[7,0,8]
+解释：342 + 465 = 807.
+</code></pre><p>示例 2：</p>
+<pre><code>输入：l1 = [0], l2 = [0]
+输出：[0]
+</code></pre><p>示例 3：</p>
+<pre><code>输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+输出：[8,9,9,9,0,0,0,1]
+</code></pre><blockquote>
+<p>提示：</p>
+<ul>
+<li>每个链表中的节点数在范围 [1, 100] 内</li>
+<li>0 &lt;= Node.val &lt;= 9</li>
+<li>题目数据保证列表表示的数字不含前导零</li>
+</ul>
+</blockquote>
+<h3 id="思路">思路</h3>
+<p>分析:</p>
+<ol>
+<li>链表每个节点存储的数字在 <code>0~9</code> 之间, 意味着当两数相加大于 <code>9</code> 后, 需要进位</li>
+<li>节点数量不大, 可以新开辟空间存储相加后的结果</li>
+</ol>
+<p>有几种思路可以实现需求</p>
+<p>第一种方法: 常规算法</p>
+<p>动态生成一个新链表, 存储两数相加的结果</p>
+<p>时间复杂度为 <code>O(MAX(L1, L2))</code>, 空间复杂度为 <code>O(MAX(L1, L2))</code></p>
+<p>第二种方法: 原地算法</p>
+<p>不额外申请一个链表, 重用已经存在的两个链表, 当 2 数相加后, 同时更新两个链表的值</p>
+<p>时间复杂度为 <code>O(MAX(L1, L2))</code>, 空间复杂度为 <code>O(1)</code></p>
+<h3 id="实现">实现</h3>
+<p>非原地算法</p>
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="cm">/**
+</span><span class="cm"> * Definition for singly-linked list.
+</span><span class="cm"> * type ListNode struct {
+</span><span class="cm"> *     Val int
+</span><span class="cm"> *     Next *ListNode
+</span><span class="cm"> * }
+</span><span class="cm"> */</span>
+<span class="kd">func</span> <span class="nf">addTwoNumbers</span><span class="p">(</span><span class="nx">l1</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">,</span> <span class="nx">l2</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">)</span> <span class="o">*</span><span class="nx">ListNode</span> <span class="p">{</span>
+    <span class="c1">// 第一个 node
+</span><span class="c1"></span>    <span class="nx">result</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">ListNode</span><span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">nil</span> <span class="p">}</span>
+    <span class="nx">cur</span> <span class="o">:=</span> <span class="nx">result</span>
+    <span class="kd">var</span> <span class="nx">sum</span><span class="p">,</span> <span class="nx">carry</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nx">l1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">||</span> <span class="nx">l2</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">sum</span> <span class="p">=</span> <span class="nx">carry</span>
+        <span class="k">if</span> <span class="nx">l1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="nx">sum</span> <span class="p">=</span> <span class="nx">sum</span> <span class="o">+</span> <span class="nx">l1</span><span class="p">.</span><span class="nx">Val</span>
+            <span class="nx">l1</span> <span class="p">=</span> <span class="nx">l1</span><span class="p">.</span><span class="nx">Next</span>
+        <span class="p">}</span> 
+        <span class="k">if</span> <span class="nx">l2</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="nx">sum</span> <span class="p">=</span> <span class="nx">sum</span> <span class="o">+</span> <span class="nx">l2</span><span class="p">.</span><span class="nx">Val</span>
+            <span class="nx">l2</span> <span class="p">=</span> <span class="nx">l2</span><span class="p">.</span><span class="nx">Next</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="mi">10</span> <span class="p">{</span>
+            <span class="nx">carry</span> <span class="p">=</span> <span class="mi">0</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">carry</span> <span class="p">=</span> <span class="mi">1</span>
+            <span class="nx">sum</span> <span class="p">=</span> <span class="nx">sum</span> <span class="o">-</span> <span class="mi">10</span>
+        <span class="p">}</span>
+        <span class="nx">cur</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">sum</span>
+        <span class="k">if</span> <span class="nx">l1</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">l2</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="nx">carry</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+                <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">ListNode</span><span class="p">{</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">nil</span> <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">break</span>
+        <span class="p">}</span>
+        <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">ListNode</span><span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">nil</span> <span class="p">}</span>
+        <span class="nx">cur</span> <span class="p">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">result</span>
+<span class="p">}</span>
+</code></pre></div><p>原地算法</p>
+<pre><code>/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
+    // 用 pL1, pL2 遍历数组, 用 cur 指向最长的链表节点
+    var pL1, pL2, pCur, pCurHead *ListNode = l1, l2, l1, l1
+    var sum, carry int = 0, 0
+    // 1: l1 != nil &amp;&amp; l2 == nil
+    // 2: l1 == nil &amp;&amp; l2 != nil
+    // 3: l1 != nil &amp;&amp; l2 != nil
+    // 0: l1 == nil &amp;&amp; l2 == nil
+    var code int
+    for {
+        sum = carry
+        code = 0
+        if pL1 != nil {
+            sum += pL1.Val
+            code = 1
+        }
+        if pL2 != nil {
+            sum += pL2.Val
+            code = code + 2
+        }
+        if sum &lt; 10 {
+            if pL1 != nil || pL2 != nil {
+                carry = 0
+            }
+        } else {
+            carry = 1
+            sum = sum - 10
+        }
+        if code == 1 {
+            pL1.Val = sum
+            pCur, pCurHead = pL1, l1
+            pL1 = pL1.Next
+        } else if code == 2 {
+            pL2.Val = sum
+            pCur, pCurHead = pL2, l2
+            pL2 = pL2.Next   
+        } else if code == 3 {
+            pL1.Val, pL2.Val = sum, sum
+            pCur, pCurHead = pL1, l1
+            pL1, pL2 = pL1.Next, pL2.Next
+        } else {
+            if carry == 1 {
+                pCur.Next = &amp;ListNode{
+                    Val: 1,
+                }
+            }
+            break
+        }
+    }
+    return pCurHead
+}
+</code></pre><h3 id="benchmark">Benchmark</h3>
+<pre><code>原地算法:
+执行用时：8 ms, 在所有 Go 提交中击败了 92.82% 的用户
+内存消耗：4.4 MB, 在所有 Go 提交中击败了 99.94%的用户
+
+非原地算法:
+执行用时：8 ms, 在所有 Go 提交中击败了 92.82% 的用户
+内存消耗：4.6 MB, 在所有 Go 提交中击败了 99.44% 的用户
+</code></pre><p>时间复杂度都为 <code>O(Max(L1, L2))</code></p>
+<p>原地算法, 没有额外的空间产生, 空间复杂度为 <code>O(1)</code></p>
+<p>非原地算法, 分配了一个额外存储链表, 长度为 <code>MAX(L1, L2)</code> 空间复杂度为 <code>O(MAX(L1, L2))</code></p>
+<blockquote>
+<p>原地算法使用前提: 如果实际开发中需要保持输入的两个链表 <code>L1 和 L2</code> 的值不变的话, 不能用原地算法</p>
+</blockquote>
+<h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
+<p><a href="https://leetcode-cn.com/submissions/detail/158329734/">常规算法</a></p>
+<p><a href="https://leetcode-cn.com/submissions/detail/158291521/">原地算法</a></p>
+
+					</div>
+					<div class="post-comments">
+						
+					</div>
+				</div>
+			</div>
+      <div class="col-md-4">
+        <aside class="sidebar"><div class="widget widget-latest-post">
+    <h4 class="widget-title">最近提交</h4>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/add-two-numbers-1/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/add-two-numbers-1/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 2. 两数相加 题干 给你两个 非空 的链表，表示两个非负的整数。</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/list/">
+        <img class="media-object" src="/images/blog/caffe.jpg" alt="链表设计">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/list/">链表设计</a></h4>
+        <p>Leetcode 链接 707. 设计链表 题干 设计链表的实现。您可以选择使用单链表或双</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/reverse-list/">
+        <img class="media-object" src="/images/blog/web-browse.jpg" alt="反转链表">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/reverse-list/">反转链表</a></h4>
+        <p>Leetcode 链接 206. 反转链表 题干 反转一个单链表。 示例 1： 输入: …</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/shuffle-string/">
+        <img class="media-object" src="/images/blog/book.jpg" alt="重新排列字符串">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/shuffle-string/">重新排列字符串</a></h4>
+        <p>Leetcode 链接 1528. 重新排列字符串 题干 给你一个字符串 s 和一个 长度相同 的整</p>
+      </div>
+    </div>
+    
+  </div><div class="widget widget-category">
+    <h4 class="widget-title">分类</h4>
+    <ul class="widget-category-list">
+      <li><a href="/categories/algorithm">Algorithm</a></li>
+    </ul>
+  </div><div class="widget widget-tag">
+    <h4 class="widget-title">标签</h4>
+    <ul class="widget-tag-list">
+      <li><a href="/tags/interview">Interview</a></li>
+      <li><a href="/tags/leetcode">Leetcode</a></li>
+      <li><a href="/tags/list">List</a></li>
+    </ul>
+  </div></aside>
+
+      </div>
+		</div>
+	</div>
+</section>
+
+<footer class="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="footer-manu">
+					<ul>
+            
+					</ul>
+				</div>
+				<p class="copyright">Copyright © 2021 XIAK 保留所有权利</p>
+			</div>
+		</div>
+	</div>
+</footer>
+
+
+
+
+
+
+<script src="https://xiak.com/plugins/jQuery/jquery.min.js" ></script>
+
+<script src="https://xiak.com/plugins/bootstrap/bootstrap.min.js" ></script>
+
+<script src="https://xiak.com/plugins/slick/slick.min.js" ></script>
+
+<script src="https://xiak.com/plugins/magnific-popup/magnific-popup.min.js" ></script>
+
+<script src="https://xiak.com/plugins/shuffle/shuffle.min.js" ></script>
+
+<script src="https://xiak.com/plugins/google-map/gmap.js" defer></script>
+
+
+
+
+<script src="https://xiak.com/js/script.min.js"></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	使用 cookies 可以提高本站的性能, 本站不会通过 cookies 获取用户任何信息, 是否同意使用 cookies <span id="js-cookie-button" class="btn btn-small btn-solid-border" style="margin: 10px">同意</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+</body>
+
+</html>
