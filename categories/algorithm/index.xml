@@ -18,6 +18,24 @@
     </item>
     
     <item>
+      <title>两数相加: 常规算法和原地算法</title>
+      <link>https://xiak.com/algorithm/calculator/</link>
+      <pubDate>Mon, 22 Mar 2021 16:30:00 +0800</pubDate>
+      
+      <guid>https://xiak.com/algorithm/calculator/</guid>
+      <description>Leetcode 链接 面试题 16.26. 计算器 题干 给定一个包含正整数、加(+)、减(-</description>
+    </item>
+    
+    <item>
+      <title>两数相加: 常规算法和原地算法</title>
+      <link>https://xiak.com/algorithm/daily-temperatures/</link>
+      <pubDate>Mon, 22 Mar 2021 16:30:00 +0800</pubDate>
+      
+      <guid>https://xiak.com/algorithm/daily-temperatures/</guid>
+      <description>Leetcode 链接 739. 每日温度 题干 请根据每日 气温 列表，重新生成一个列表。对</description>
+    </item>
+    
+    <item>
       <title>链表设计</title>
       <link>https://xiak.com/algorithm/list/</link>
       <pubDate>Fri, 19 Mar 2021 15:30:00 +0800</pubDate>
@@ -46,10 +64,10 @@
     
     <item>
       <title>字符串 URL 化</title>
-      <link>https://xiak.com/algorithm/string-to-url-lcci/</link>
+      <link>https://xiak.com/algorithm/string-to-url/</link>
       <pubDate>Thu, 11 Mar 2021 19:50:00 +0800</pubDate>
       
-      <guid>https://xiak.com/algorithm/string-to-url-lcci/</guid>
+      <guid>https://xiak.com/algorithm/string-to-url/</guid>
       <description>Leetcode 链接 面试题 01.03. URL化 题干 URL化。编写一种方法，将字符串中</description>
     </item>
     
