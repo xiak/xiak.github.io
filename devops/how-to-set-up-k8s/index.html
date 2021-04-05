@@ -218,11 +218,13 @@
 </tr>
 </tbody>
 </table>
-<p><code>3</code> 台 <code>k8s</code> 集群外 <code>etcd cluster</code>
-<code>3</code> 台由 <code>haproxy + keepalived</code> 组成的 <code>soft loadbalancer</code>
-<code>3</code> 台 <code>k8s master</code> 节点, 每台节点上分别包含 <code>kube-apiserver</code>, <code>kube-contorller-manager</code>, <code>kube-scheduler</code> 三个服务
-<code>1</code> 至少 <code>1</code> 台干活的节点 <code>k8s worker</code>
-<code>1</code> 台跳板机, 所有人访问集群, 必须通过此跳板机</p>
+<ul>
+<li><code>3</code> 台 <code>k8s</code> 集群外 <code>etcd cluster</code></li>
+<li><code>3</code> 台由 <code>haproxy + keepalived</code> 组成的 <code>soft loadbalancer</code></li>
+<li><code>3</code> 台 <code>k8s master</code> 节点, 每台节点上分别包含 <code>kube-apiserver</code>, <code>kube-contorller-manager</code>, <code>kube-scheduler</code> 三个服务</li>
+<li><code>1</code> 至少 <code>1</code> 台干活的节点 <code>k8s worker</code></li>
+<li><code>1</code> 台跳板机, 所有人访问集群, 必须通过此跳板机</li>
+</ul>
 <p>如果资源紧张, 可以去掉 <code>soft loadbalancer</code>, 可以把 <code>etcd</code> 和 <code>kubernetes master</code> 安装在同一台服务器上, 这种情况本文不作阐述</p>
 <blockquote>
 <p>接下来所有步骤默认目录都是 <code>kubernetes/install/</code></p>
