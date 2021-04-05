@@ -152,9 +152,8 @@
 </ul>
 <h2 id="开始工作">开始工作</h2>
 <h3 id="查看-disk-状况">查看 disk 状况</h3>
-<p>执行</p>
 <pre><code>df -h
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Filesystem           Size  Used Avail Use% Mounted on
 devtmpfs             9.8G     <span class="m">0</span>  9.8G   0% /dev
 tmpfs                9.9G     <span class="m">0</span>  9.9G   0% /dev/shm
@@ -174,17 +173,14 @@ shm                   64M     <span class="m">0</span>   64M   0% /var/lib/docke
 overlay               50G  2.3G   48G   5% /var/lib/docker/overlay2/25404b02f6acf7a2415055537963112784b89dab646a617ea06521ede54096d0/merged
 overlay               50G  2.3G   48G   5% /var/lib/docker/overlay2/8c532f63cb217a809c5975dade783c32d7848079c755ce30d266b5e2dd05aa05/merged
 </code></pre></div><h3 id="备份-home-目录">备份 /home 目录</h3>
-<p>执行</p>
 <pre><code>cp -r /home/ homebak/
 </code></pre><h3 id="卸载-home-目录">卸载 /home 目录</h3>
-<p>执行</p>
 <pre><code>umount /home
 </code></pre><p>如果 <code>/home</code> 目录下有进程正在运，使用 <code>fuser -m -v -i -k /home</code> 终止 <code>/home</code> 目录下的进程，最后使用 <code>umount /home</code> 卸载 <code>/home</code></p>
 <h3 id="删除设备">删除设备</h3>
 <p><code>xfs</code> 文件系统不支持减少逻辑分区，无法使用 <code>lvreduce</code>，这里用 <code>lvremove</code> 先删除 <code>/home</code> 所在的lv</p>
-<p>执行</p>
 <pre><code>lvremove /dev/mapper/cl-home
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Do you really want to remove active logical volume cl/home? <span class="o">[</span>y/n<span class="o">]</span>: y
   Logical volume <span class="s2">&#34;home&#34;</span> successfully removed
 <span class="o">[</span>root@node1 ~<span class="o">]</span><span class="c1"># lvextend -L +900G /dev/mapper/cl-root</span>
@@ -202,9 +198,8 @@ meta-data<span class="o">=</span>/dev/mapper/cl-root    <span class="nv">isize</
 <span class="nv">realtime</span> <span class="o">=</span>none                   <span class="nv">extsz</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>0, <span class="nv">rtextents</span><span class="o">=</span><span class="m">0</span>
 data blocks changed from <span class="m">13107200</span> to <span class="m">249036800</span>
 </code></pre></div><h3 id="查看-vg">查看 vg</h3>
-<p>执行</p>
 <pre><code>vgdisplay
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--- Volume group ---
   VG Name               cl
   System ID
@@ -227,16 +222,14 @@ data blocks changed from <span class="m">13107200</span> to <span class="m">2490
   VG UUID               oSQeGz-finT-nTPd-RvOx-xr2J-2FQh-nkTldl
 
 </code></pre></div><p>根据 <code>Free  PE / Size</code>  来增加 <code>lv</code>, 注意， <code>Free  PE / Size</code> 一定要留一部分给 <code>/home</code>, 这里 我准备留 <code>68G</code> 给 <code>/home</code>， 其余的都扩展 <code>/root</code></p>
-<h3 id="扩展-root所在的lv增加-900g">扩展 /root所在的lv，增加 900G</h3>
-<p>执行</p>
+<h3 id="扩展-root-所在的-lv增加-900g">扩展 /root 所在的 lv，增加 900G</h3>
 <pre><code>lvextend -L +900G /dev/mapper/cl-root
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Size of logical volume cl/root changed from 50.00 GiB <span class="o">(</span><span class="m">12800</span> extents<span class="o">)</span> to 950.00 GiB <span class="o">(</span><span class="m">243200</span> extents<span class="o">)</span>.
 Logical volume cl/root successfully resized.
-</code></pre></div><h3 id="扩展-root文件系统">扩展 /root文件系统</h3>
-<p>执行</p>
+</code></pre></div><h3 id="扩展-root-文件系统">扩展 /root 文件系统</h3>
 <pre><code>xfs_growfs /dev/mapper/cl-root
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">meta-data<span class="o">=</span>/dev/mapper/cl-root    <span class="nv">isize</span><span class="o">=</span><span class="m">512</span>    <span class="nv">agcount</span><span class="o">=</span>4, <span class="nv">agsize</span><span class="o">=</span><span class="m">3276800</span> <span class="nv">blks</span>
          <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">attr</span><span class="o">=</span>2, <span class="nv">projid32bit</span><span class="o">=</span><span class="nv">1</span>
          <span class="o">=</span>                       <span class="nv">crc</span><span class="o">=</span><span class="m">1</span>        <span class="nv">finobt</span><span class="o">=</span><span class="m">0</span> <span class="nv">spinodes</span><span class="o">=</span><span class="m">0</span>
@@ -247,15 +240,13 @@ Logical volume cl/root successfully resized.
          <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span> blks, lazy-count<span class="o">=</span><span class="m">1</span>
 <span class="nv">realtime</span> <span class="o">=</span>none                   <span class="nv">extsz</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>0, <span class="nv">rtextents</span><span class="o">=</span><span class="m">0</span>
 data blocks changed from <span class="m">13107200</span> to <span class="m">249036800</span>
-</code></pre></div><h3 id="重建-home-的lv">重建 home 的lv</h3>
-<p>执行</p>
+</code></pre></div><h3 id="重建-home-的-lv">重建 home 的 lv</h3>
 <pre><code>lvcreate -L 63G -n home cl
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"> Logical volume <span class="s2">&#34;home&#34;</span> created.
 </code></pre></div><h3 id="查看-vg-1">查看 vg</h3>
-<p>执行</p>
 <pre><code>vgdisplay
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--- Volume group ---
   VG Name               cl
   System ID
@@ -278,9 +269,8 @@ data blocks changed from <span class="m">13107200</span> to <span class="m">2490
   VG UUID               lIOQS4-KiX0-yfvd-5iJO-BqPm-WIIx-7uie2W
 </code></pre></div><p>查看 <code>Free  PE / Size</code> 是否被分配完了</p>
 <h3 id="格式化创建文件系统">格式化创建文件系统</h3>
-<p>执行</p>
 <pre><code>mkfs.xfs /dev/cl/home
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">meta-data<span class="o">=</span>/dev/cl/home           <span class="nv">isize</span><span class="o">=</span><span class="m">512</span>    <span class="nv">agcount</span><span class="o">=</span>4, <span class="nv">agsize</span><span class="o">=</span><span class="m">4128768</span> <span class="nv">blks</span>
          <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">attr</span><span class="o">=</span>2, <span class="nv">projid32bit</span><span class="o">=</span><span class="nv">1</span>
          <span class="o">=</span>                       <span class="nv">crc</span><span class="o">=</span><span class="m">1</span>        <span class="nv">finobt</span><span class="o">=</span>0, <span class="nv">sparse</span><span class="o">=</span><span class="m">0</span>
@@ -290,16 +280,14 @@ data blocks changed from <span class="m">13107200</span> to <span class="m">2490
 <span class="nv">log</span>      <span class="o">=</span>internal log           <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>8064, <span class="nv">version</span><span class="o">=</span><span class="nv">2</span>
          <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span> blks, lazy-count<span class="o">=</span><span class="m">1</span>
 <span class="nv">realtime</span> <span class="o">=</span>none                   <span class="nv">extsz</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>0, <span class="nv">rtextents</span><span class="o">=</span><span class="m">0</span>
-</code></pre></div><h3 id="重新挂载-home-目录">重新挂载 home 目录</h3>
-<p>执行</p>
+</code></pre></div><h3 id="重新挂载-home-目录">重新挂载 /home 目录</h3>
 <pre><code>mount /dev/cl/home /home
 </code></pre><h3 id="还原-home-目录数据">还原 home 目录数据</h3>
-<p>执行</p>
+<p>Output:</p>
 <pre><code>cp -R ./homebak/* /home
 </code></pre><p>###　查看磁盘情况</p>
-<p>执行</p>
 <pre><code>df -h
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Filesystem           Size  Used Avail Use% Mounted on
 devtmpfs             9.8G     <span class="m">0</span>  9.8G   0% /dev
 tmpfs                9.9G     <span class="m">0</span>  9.9G   0% /dev/shm
@@ -323,15 +311,12 @@ overlay              950G  2.3G  948G   1% /var/lib/docker/overlay2/8c532f63cb21
 <p>##　如果新增加硬盘</p>
 <h3 id="手动给主机增加-100g-硬盘">手动给主机增加 100G 硬盘</h3>
 <h3 id="扫描-scsi总线并添加-scsi-设备">扫描 SCSI总线并添加 SCSI 设备</h3>
-<p>执行</p>
 <pre><code>for host in $(ls /sys/class/scsi_host) ; do echo &quot;- - -&quot; &gt; /sys/class/scsi_host/$host/scan; done
 </code></pre><h3 id="重新扫描-scsi-总线">重新扫描 SCSI 总线</h3>
-<p>执行</p>
 <pre><code>for scsi_device in $(ls /sys/class/scsi_device/); do echo 1 &gt; /sys/class/scsi_device/$scsi_device/device/rescan; done
 </code></pre><h3 id="查看已添加的磁盘能够看到sdb说明添加成功">查看已添加的磁盘，能够看到sdb说明添加成功</h3>
-<p>执行</p>
 <pre><code>lsblk
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 fd0           2:0    <span class="m">1</span>    4K  <span class="m">0</span> disk
 sda           8:0    <span class="m">0</span>    1T  <span class="m">0</span> disk
@@ -344,12 +329,10 @@ sdb           8:16   <span class="m">0</span>  100G  <span class="m">0</span> di
 sr0          11:0    <span class="m">1</span> 1024M  <span class="m">0</span> rom
 </code></pre></div><p>看到 <code>sdb 100G</code> 就是我们新增的硬盘</p>
 <h3 id="初始化磁盘">初始化磁盘</h3>
-<p>执行</p>
 <pre><code>pvcreate /dev/sdb
 </code></pre><h3 id="查看物理信息">查看物理信息</h3>
-<p>执行</p>
 <pre><code>pvdisplay
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"> --- Physical volume ---
   PV Name               /dev/sda2
   VG Name               cl
@@ -374,12 +357,10 @@ sr0          11:0    <span class="m">1</span> 1024M  <span class="m">0</span> ro
   PV UUID               aCtCCE-c0Al-2kR1-1AN5-c2Ll-3q07-cFSbFz
 </code></pre></div><h3 id="创建逻辑卷组">创建逻辑卷组</h3>
 <p>创建逻辑卷组 <code>cl2</code>, 并将 <code>/dev/sdb</code> 物理卷加入到这个卷组里</p>
-<p>执行</p>
 <pre><code>vgcreate cl2 /dev/sdb
 </code></pre><h3 id="查看逻辑卷组">查看逻辑卷组</h3>
-<p>执行</p>
 <pre><code>vgdisplay
-</code></pre><p>输出</p>
+</code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--- Volume group ---
   VG Name               cl
   System ID
@@ -422,24 +403,19 @@ sr0          11:0    <span class="m">1</span> 1024M  <span class="m">0</span> ro
   Free  PE / Size       <span class="m">25599</span> / 100.00 GiB
   VG UUID               MnZkLp-FwDf-jffM-tUu8-Q3KC-XFX7-zIpzCf
 </code></pre></div><h3 id="创建逻辑卷">创建逻辑卷</h3>
-<p>执行</p>
 <pre><code>lvcreate -L 99G -n home cl2
 </code></pre><h3 id="格式化">格式化</h3>
-<p>执行</p>
 <pre><code>mkfs.xfs /dev/cl2/home
 </code></pre><h3 id="重新挂载-home-目录-1">重新挂载 home 目录</h3>
-<p>执行</p>
 <pre><code>mount /dev/cl2/home /home
 </code></pre><h2 id="附录">附录</h2>
 <h3 id="如何开机自动挂载">如何开机自动挂载</h3>
 <p>如何开机自动挂载 <code>/dev/cl3/ceph</code> 到 <code>/ceph</code> ?</p>
-<p>执行</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt;&gt; /etc/fstab <span class="s">&lt;&lt;EOF
 </span><span class="s">/dev/mapper/cl3-ceph    /ceph                   xfs     defaults        0 0
 </span><span class="s">EOF</span>
 </code></pre></div><h3 id="如何清空磁盘数据">如何清空磁盘数据</h3>
-<p>执行
-<code>dd if=/dev/zero of=/dev/sdc bs=512 count=1</code></p>
+<p><code>dd if=/dev/zero of=/dev/sdc bs=512 count=1</code></p>
 
 					</div>
 					<div class="post-comments">
