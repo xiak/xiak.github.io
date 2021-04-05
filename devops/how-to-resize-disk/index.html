@@ -285,7 +285,7 @@ data blocks changed from <span class="m">13107200</span> to <span class="m">2490
 </code></pre><h3 id="还原-home-目录数据">还原 home 目录数据</h3>
 <p>Output:</p>
 <pre><code>cp -R ./homebak/* /home
-</code></pre><p>###　查看磁盘情况</p>
+</code></pre><h3 id="查看磁盘情况">查看磁盘情况</h3>
 <pre><code>df -h
 </code></pre><p>Output:</p>
 <div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Filesystem           Size  Used Avail Use% Mounted on
@@ -308,9 +308,8 @@ overlay              950G  2.3G  948G   1% /var/lib/docker/overlay2/8c532f63cb21
 /dev/mapper/cl-home   63G   33M   63G   1% /home
 </code></pre></div><p>可以看到 <code>/dev/mapper/cl-home</code> 从 <code>963G</code> 减少到了 <code>63G</code></p>
 <p><code>/dev/mapper/cl-root</code> 从 <code>50G</code> 增加到了 <code>950G</code></p>
-<p>##　如果新增加硬盘</p>
-<h3 id="手动给主机增加-100g-硬盘">手动给主机增加 100G 硬盘</h3>
-<h3 id="扫描-scsi总线并添加-scsi-设备">扫描 SCSI总线并添加 SCSI 设备</h3>
+<h2 id="如果新增加硬盘">如果新增加硬盘</h2>
+<h3 id="手动给主机增加-100g-硬盘-扫描-scsi-总线并添加-scsi-设备">手动给主机增加 100G 硬盘, 扫描 SCSI 总线并添加 SCSI 设备</h3>
 <pre><code>for host in $(ls /sys/class/scsi_host) ; do echo &quot;- - -&quot; &gt; /sys/class/scsi_host/$host/scan; done
 </code></pre><h3 id="重新扫描-scsi-总线">重新扫描 SCSI 总线</h3>
 <pre><code>for scsi_device in $(ls /sys/class/scsi_device/); do echo 1 &gt; /sys/class/scsi_device/$scsi_device/device/rescan; done
