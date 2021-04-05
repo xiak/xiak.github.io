@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+  <meta charset="utf-8">
+  <title>自动化安装高性能高可用 kubernetes 集群</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Xiak&#39;s Blog">
+  <meta name="author" content="Xiak">
+  <meta name="generator" content="Hugo 0.81.0" />
+  
+  
+  <meta property="og:image" content="https://xiak.com/images/blog/book.jpg" />
+  
+  <meta property="og:title" content="自动化安装高性能高可用 kubernetes 集群" />
+<meta property="og:description" content="自动化安装高性能高可用 kubernetes 集群 目录 前提 第一步 集群规划 第二步 安装" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiak.com/devops/how-to-set-up-k8s/" /><meta property="article:section" content="devops" />
+<meta property="article:published_time" content="2019-12-22T12:00:00&#43;08:00" />
+<meta property="article:modified_time" content="2019-12-22T12:00:00&#43;08:00" />
+
+
+  
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/bootstrap/bootstrap.min.css" media='screen'>
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/Ionicons/css/ionicons.min.css" >
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/magnific-popup/magnific-popup.min.css" >
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/slick/slick.css" >
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://xiak.com/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://xiak.com/images/favicon.png" type="image/x-icon">
+  <link rel="icon" href="https://xiak.com/images/favicon.png" type="image/x-icon">
+
+</head><body>
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+
+<header class="navigation">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        
+        <nav class="navbar">
+          
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+              <img src="https://xiak.com/images/logo.png" alt="XIAK | Community" width="100px" class="img-responsive">
+            </a>
+          </div>
+          
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">主页</a></li>
+              
+              
+              
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                  aria-expanded="false">博客 <span class="ion-ios-arrow-down"></span></a>
+                <ul class="dropdown-menu">
+                  
+                  <li><a href="/devops">DevOps</a></li>
+                  
+                  <li><a href="/algorithm">算法</a></li>
+                  
+                </ul>
+              </li>
+              
+              
+              
+              <li><a href="/contact">联系我</a></li>
+              
+              
+
+              
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-title bg-2" style="background-image: url('https://xiak.com/images/featue-bg.jpg');">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="block">
+          <h1>自动化安装高性能高可用 kubernetes 集群</h1>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-wrapper">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="post post-single">
+					<h2 class="post-title">自动化安装高性能高可用 kubernetes 集群</h2>
+					<div class="post-meta">
+						<ul>
+              <li><i class="ion-calendar"></i> December 22, 2019</li>
+              <li><i class="ion-android-people"></i>
+                提交人
+                
+                <a class="text-primary" href="/author/xiak">Xiak</a>
+                
+              </li>
+              <li><i class="ion-pricetags"></i> 
+                
+                <a href="/tags/devops">Devops</a>
+								
+                , <a href="/tags/linux">Linux</a>
+								
+              </li>
+            </ul>
+					</div>
+					<div class="post-thumb">
+						<img class="img-responsive" src="/images/blog/book.jpg" alt="自动化安装高性能高可用 kubernetes 集群">
+					</div>
+					<div class="post-content post-excerpt">
+						<h1 id="自动化安装高性能高可用-kubernetes-集群">自动化安装高性能高可用 kubernetes 集群</h1>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前提</li>
+<li>第一步 集群规划</li>
+<li>第二步 安装 Loadbalancer 集群</li>
+<li>第三步 安装独立的 ETCD 集群</li>
+<li>第四步 创建 kubernetes api 节点</li>
+<li>第五步 安装网络插件</li>
+<li>第六步 添加节点到创建好的集群中</li>
+</ul>
+<h2 id="前提">前提</h2>
+<p>1 下载 repo</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">git clone https://github.com/xiak/k8s-infra.git
+</code></pre></div><p>整个工程的目录结构如下</p>
+<pre><code>kubernetes
+  |- doc
+  |- install           (脚手架)
+  |- namespace         (一些常用的应用)
+  |- network           (ingress 插件)
+  |- storage           (后端存储)
+</code></pre><p>2 本文将带领大家安装一个高可用的 <code>k8s</code> 集群, 最少需要 <code>11</code> 台机器(虚拟机或物理机都可以)</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>系统</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>etcd</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>etcd</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>etcd</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>soft loadbalancer</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>soft loadbalancer</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>soft loadbalancer</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>kubernetes master</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>kubernetes master</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>kubernetes master</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>kubernetes worker</td>
+<td>centos 7 min</td>
+</tr>
+<tr>
+<td>kubernetes bastion</td>
+<td>centos 7 min</td>
+</tr>
+</tbody>
+</table>
+<p><code>3</code> 台 <code>k8s</code> 集群外 <code>etcd cluster</code>
+<code>3</code> 台由 <code>haproxy + keepalived</code> 组成的 <code>soft loadbalancer</code>
+<code>3</code> 台 <code>k8s master</code> 节点, 每台节点上分别包含 <code>kube-apiserver</code>, <code>kube-contorller-manager</code>, <code>kube-scheduler</code> 三个服务
+<code>1</code> 至少 <code>1</code> 台干活的节点 <code>k8s worker</code>
+<code>1</code> 台跳板机, 所有人访问集群, 必须通过此跳板机</p>
+<p>如果资源紧张, 可以去掉 <code>soft loadbalancer</code>, 可以把 <code>etcd</code> 和 <code>kubernetes master</code> 安装在同一台服务器上, 这种情况本文不作阐述</p>
+<blockquote>
+<p>接下来所有步骤默认目录都是 <code>kubernetes/install/</code></p>
+</blockquote>
+<h2 id="第一步-集群规划">第一步 集群规划</h2>
+<p>在脚本 <code>install-etc-hosts.sh</code> 中定义你的集群</p>
+<p>格式为 <code>IP 主机名</code>, 主机名最好能够一目了然得看出主机的用途</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="k">function</span> make::etchosts <span class="o">{</span>
+    ......
+    cat &gt; <span class="s2">&#34;</span><span class="si">${</span><span class="nv">conf_file</span><span class="si">}</span><span class="s2">&#34;</span> <span class="s">&lt;&lt; EOF
+</span><span class="s">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+</span><span class="s">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+</span><span class="s">10.10.10.2       k8s-bastion            root     password
+</span><span class="s">10.10.10.6       k8s-master-1           root     password
+</span><span class="s">10.10.10.7       k8s-master-2           root     password
+</span><span class="s">10.10.10.8       k8s-master-3           root     password
+</span><span class="s">10.10.10.9       k8s-slb-1              root     password
+</span><span class="s">10.10.10.10      k8s-slb-2              root     password
+</span><span class="s">10.10.10.11      k8s-slb-3              root     password
+</span><span class="s">10.10.10.3       k8s-etcd-1             root     password
+</span><span class="s">10.10.10.4       k8s-etcd-2             root     password
+</span><span class="s">10.10.10.5       k8s-etcd-3             root     password
+</span><span class="s">10.10.10.101     k8s-ceph-1             root     password
+</span><span class="s">10.10.10.102     k8s-ceph-2             root     password
+</span><span class="s">10.10.10.103     k8s-ceph-3             root     password
+</span><span class="s">10.10.10.104     k8s-ceph-4             root     password
+</span><span class="s">10.10.10.105     k8s-ceph-5             root     password
+</span><span class="s">10.10.10.106     k8s-ceph-6             root     password
+</span><span class="s">10.10.10.107     k8s-report             root     password
+</span><span class="s">10.10.10.108     k8s-dnd                root     password
+</span><span class="s">10.10.10.109     k8s-cp                 root     password
+</span><span class="s">10.10.10.110     k8s-dp                 root     password
+</span><span class="s">10.10.10.111     k8s-dash               root     password
+</span><span class="s">10.10.10.112     k8s-ceph-dashboard     root     password
+</span><span class="s">10.10.10.113     k8s-git                root     password
+</span><span class="s">10.10.10.114     k8s-hub                root     password
+</span><span class="s">10.10.10.115     k8s-infra              root     password
+</span><span class="s">EOF</span>
+    ......
+<span class="o">}</span>
+</code></pre></div><p>除此之外, 集群会使用 <code>10.10.10.100</code> 作为 <code>loadbalancer</code> 的 ip, 在 <code>第二步</code> 中会用到</p>
+<h2 id="第二步-安装-loadbalancer-集群">第二步 安装 Loadbalancer 集群</h2>
+<p>在第一步中定义了三台主机来作为负载均衡的节点:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.9    k8s-slb-1
+10.10.10.10   k8s-slb-2
+10.10.10.11   k8s-slb-3
+</code></pre></div><p>在第一步中定义了三台主机作为 etcd 集群</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.3    k8s-etcd-1
+10.10.10.4    k8s-etcd-2
+10.10.10.5    k8s-etcd-3
+</code></pre></div><p>在第一步中定义了三台主机作为 kubernetes api server</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.6    k8s-master-1
+10.10.10.7    k8s-master-2
+10.10.10.8    k8s-master-3
+</code></pre></div><p>确保所有主机配置好了 IP 和 主机名</p>
+<p>创建一个 <code>Loadbalancer IP=10.10.10.100</code> 作为 ETCD 和 Kubernetes 的外部访问接口:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-slb.sh root password 10.10.10.100 ens160 <span class="s2">&#34;10.10.10.6 10.10.10.7 10.10.10.8&#34;</span> <span class="s2">&#34;10.10.10.3 10.10.10.4 10.10.10.5&#34;</span> 10.10.10.9 10.10.10.10 10.10.10.11
+</code></pre></div><p>访问 https://10.10.10.100:8443 即可访问 kubernetes api servers
+访问 https://10.10.10.100:2379 即可访问 ETCD CLUSTER</p>
+<blockquote>
+<p>NOTE: IP 地址 <code>10.10.10.100</code> 是一个 VIP, 而不是真实的一台服务器</p>
+</blockquote>
+<h2 id="第三步-安装独立的-etcd-集群">第三步 安装独立的 ETCD 集群</h2>
+<p>在第一步中定义了三台主机作为 etcd 集群</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.3    k8s-etcd-1
+10.10.10.4    k8s-etcd-2
+10.10.10.5    k8s-etcd-3
+</code></pre></div><p>创建一个 <code>ETCD (version: 3.4.3)</code> 集群, <code>kubernetes</code> 可以通过负载均衡器访问 <code>ETCD</code> 集群 <code>VIP 10.10.10.100:2379 or cluster-vip.com:2379</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-etcd.sh root password 3.4.3 cluster-vip.com 10.10.10.100 /etc/etcd 10.10.10.3 10.10.10.4 10.10.10.5
+</code></pre></div><blockquote>
+<p>其中需要注意的是, 如果上某台服务器上曾经安装过 etcd, 则需要先卸载, 需执行如下命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">uninstall-etcd.sh root password /etc/etcd /usr/local/bin 10.10.10.3 10.10.10.4 10.10.10.5
+</code></pre></div><p>卸载完成后再执行如下命令安装 <code>ETCD</code> 集群</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-etcd.sh root password 3.4.3 cluster-vip.com 10.10.10.100 /etc/etcd 10.10.10.3 10.10.10.4 10.10.10.5
+</code></pre></div></blockquote>
+<h2 id="第四步-创建-kubernetes-master-节点">第四步 创建 kubernetes master 节点</h2>
+<p>在第一步中定义了三台主机作为 <code>kubernetes master</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.6    k8s-master-1
+10.10.10.7    k8s-master-2
+10.10.10.8    k8s-master-3
+</code></pre></div><p>首先创建集群中第一台 <code>kubernetes master</code>, 剩下的我们可以以后再添加</p>
+<ul>
+<li>IP: 10.10.10.6</li>
+<li>Role: master</li>
+<li>Kubernetes Version: 1.16.2</li>
+<li>Docker Version: 18.09.7</li>
+<li>Docker Registry: hub.docker.com</li>
+<li>Kubernetes API Server VIP: 10.10.10.100:8443</li>
+<li>ETCD Cluster VIP: 10.10.10.100:2379</li>
+<li>One of ETCD Server IP: 10.10.10.3</li>
+<li>ETCD Cert Path: /etc/etcd/pki on 10.10.10.3</li>
+<li>Network Proxy: IPVS</li>
+<li>NTP Servers: 10.10.10.9, 10.10.10.10, 10.10.10.11</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-k8s.sh 10.10.10.6 root password 1.16.2 18.09.7 10.10.10.100:8443 10.10.10.100:2379 10.10.10.3 <span class="s2">&#34;&#34;</span> new master ipvs systemd hub.docker.com /etc/etcd/pki 10.10.10.9 10.10.10.10 10.10.10.11
+</code></pre></div><blockquote>
+<p>其中需要注意的是, 如果 10.10.10.6 上曾经安装过 kubernetes, 则需要先卸载</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">uninstall-k8s.sh root password <span class="nb">true</span> <span class="nb">true</span> 10.10.10.6 10.10.10.7 10.10.10.8
+</code></pre></div><p>再执行</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-k8s.sh 10.10.10.6 root password 1.16.2 18.09.7 10.10.10.100:8443 10.10.10.100:2379 10.10.10.3 <span class="s2">&#34;&#34;</span> new master ipvs systemd hub.docker.com /etc/etcd/pki 10.10.10.9 10.10.10.10 10.10.10.11
+</code></pre></div></blockquote>
+<h2 id="第五步-安装网络插件">第五步 安装网络插件</h2>
+<p>calico 插件用到了 ETCD 集群, 我们需要再看下创建好的 ETCD 集群信息</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.3    k8s-etcd-1
+10.10.10.4    k8s-etcd-2
+10.10.10.5    k8s-etcd-3
+</code></pre></div><p>安装 calico 网络插件</p>
+<blockquote>
+<p>其中 <code>calico-template.yaml</code> 为配置文件模板, <code>https://10.10.10.100:2379</code> 为 <code>ETCD</code> 负载均衡地址</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-calico.sh 10.10.10.3 root password https://10.10.10.100:2379 /etc/etcd/pki 10.10.0.0/24 calico-template.yaml
+</code></pre></div><p>如果不使用负载均衡 VIP 节点， 也可以使用如下命令安装 calico</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-calico.sh 10.10.10.3 root password https://10.10.10.3:2379,https://10.10.10.4:2379,https://10.10.10.5:2379 /etc/etcd/pki 10.10.0.0/24 calico-template.yaml
+</code></pre></div><h2 id="第六步-添加节点到创建好的集群中">第六步 添加节点到创建好的集群中</h2>
+<p>在<code>第四步</code>中, 我们创建好了第一台 kubernetes 节点</p>
+<p>现在我们会把一台 kubernetes 控制节点和一台工作节点加入到集群中</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.7    k8s-master-2
+10.10.10.23   k8s-worker-1
+</code></pre></div><h3 id="控制节点加入集群">控制节点加入集群</h3>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-k8s.sh 10.10.10.7 root password 1.16.2 18.09.7 10.10.10.100:8443 10.10.10.100:2379 etcd-first-node.com k8s-first-node.com join master ipvs hub.docker.com /etc/etcd/pki 10.10.10.9 10.10.10.10 10.10.10.11
+</code></pre></div><h3 id="工作节点加入集群">工作节点加入集群</h3>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">install-k8s.sh 10.10.10.23 root password 1.16.2 18.09.7 10.10.10.100:8443 10.10.10.100:2379 etcd-first-node.com k8s-first-node.com join worker ipvs hub.docker.com /etc/etcd/pki 10.10.10.9 10.10.10.10 10.10.10.11
+</code></pre></div><blockquote>
+<p>NOTE: <code>etcd-first-node.com</code> 表示任意的一台 <code>etcd</code> 节点的 <code>ip</code> (10.10.10.3 or &hellip;),  <code>k8s-first-node.com</code> 表示集群中的任意 <code>kubernetes master</code> 节点的 <code>ip</code> (可选集群第一个节点 10.10.10.6)</p>
+</blockquote>
+<h2 id="结语">结语</h2>
+<p>至此我们的一个高可用 kubernetes 集群搭建完毕，如果大家有什么意见或者建议，请提 <code>pr</code> , 如发现 <code>bug</code> 请提交 <code>issue</code></p>
+<p>联系方式: <code>x@xiak.com</code></p>
+
+					</div>
+					<div class="post-comments">
+						
+					</div>
+				</div>
+			</div>
+      <div class="col-md-4">
+        <aside class="sidebar"><div class="widget widget-latest-post">
+    <h4 class="widget-title">最近提交</h4>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/add-two-numbers-1/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/add-two-numbers-1/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 2. 两数相加 题干 给你两个 非空 的链表，表示两个非负的整数。</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/calculator/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/calculator/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 面试题 16.26. 计算器 题干 给定一个包含正整数、加(+)、减(-</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/daily-temperatures/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/daily-temperatures/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 739. 每日温度 题干 请根据每日 气温 列表，重新生成一个列表。对</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/list/">
+        <img class="media-object" src="/images/blog/cafe.jpg" alt="链表设计">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/list/">链表设计</a></h4>
+        <p>Leetcode 链接 707. 设计链表 题干 设计链表的实现。您可以选择使用单链表或双</p>
+      </div>
+    </div>
+    
+  </div><div class="widget widget-category">
+    <h4 class="widget-title">分类</h4>
+    <ul class="widget-category-list">
+      <li><a href="/categories/algorithm">Algorithm</a></li>
+      <li><a href="/categories/devops">Devops</a></li>
+    </ul>
+  </div><div class="widget widget-tag">
+    <h4 class="widget-title">标签</h4>
+    <ul class="widget-tag-list">
+      <li><a href="/tags/devops">Devops</a></li>
+      <li><a href="/tags/interview">Interview</a></li>
+      <li><a href="/tags/leetcode">Leetcode</a></li>
+      <li><a href="/tags/linux">Linux</a></li>
+      <li><a href="/tags/list">List</a></li>
+      <li><a href="/tags/vmware">Vmware</a></li>
+    </ul>
+  </div></aside>
+
+      </div>
+		</div>
+	</div>
+</section>
+
+<footer class="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="footer-manu">
+					<ul>
+            
+					</ul>
+				</div>
+				<p class="copyright">Copyright © 2021 XIAK 保留所有权利</p>
+			</div>
+		</div>
+	</div>
+</footer>
+
+
+
+
+
+
+<script src="https://xiak.com/plugins/jQuery/jquery.min.js" ></script>
+
+<script src="https://xiak.com/plugins/bootstrap/bootstrap.min.js" ></script>
+
+<script src="https://xiak.com/plugins/slick/slick.min.js" ></script>
+
+<script src="https://xiak.com/plugins/magnific-popup/magnific-popup.min.js" ></script>
+
+<script src="https://xiak.com/plugins/shuffle/shuffle.min.js" ></script>
+
+<script src="https://xiak.com/plugins/google-map/gmap.js" defer></script>
+
+
+
+
+<script src="https://xiak.com/js/script.min.js"></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	使用 cookies 可以提高本站的性能, 本站不会通过 cookies 获取用户任何信息, 是否同意使用 cookies <span id="js-cookie-button" class="btn btn-small btn-solid-border" style="margin: 10px">同意</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+</body>
+
+</html>
