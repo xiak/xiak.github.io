@@ -17,5 +17,14 @@
       <description>如何重新划分Linux逻辑分区大小 在工作中遇到过很多因为逻辑</description>
     </item>
     
+    <item>
+      <title>如何升级CentOS内核</title>
+      <link>https://xiak.com/devops/how-to-up-kernel/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://xiak.com/devops/how-to-up-kernel/</guid>
+      <description>如何升级 CentOS7 内核 CentOS 7 内核包 kernel: This package contains the kernel for single-core, multi-core, and multi-processor systems kernel-devel : This contains kernel headers</description>
+    </item>
+    
   </channel>
 </rss>
