@@ -14,7 +14,7 @@
       <pubDate>Sun, 22 Dec 2019 12:00:00 +0800</pubDate>
       
       <guid>https://xiak.com/devops/how-to-set-up-k8s/</guid>
-      <description>自动化安装高性能高可用 kubernetes 集群 目录 前提 第一步 集群规划 第二步 安装</description>
+      <description>自动化安装高性能高可用 kubernetes 集群 本文是通过脚手架 github@k8s-infra 安装 k8s 集群, 没</description>
     </item>
     
     <item>
