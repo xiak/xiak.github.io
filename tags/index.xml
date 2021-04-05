@@ -35,5 +35,32 @@
       <description></description>
     </item>
     
+    <item>
+      <title>DevOps</title>
+      <link>https://xiak.com/tags/devops/</link>
+      <pubDate>Wed, 19 Jun 2019 18:30:00 +0800</pubDate>
+      
+      <guid>https://xiak.com/tags/devops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernetes</title>
+      <link>https://xiak.com/tags/kubernetes/</link>
+      <pubDate>Wed, 19 Jun 2019 18:30:00 +0800</pubDate>
+      
+      <guid>https://xiak.com/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>https://xiak.com/tags/linux/</link>
+      <pubDate>Wed, 19 Jun 2019 18:30:00 +0800</pubDate>
+      
+      <guid>https://xiak.com/tags/linux/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

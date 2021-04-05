@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+  <meta charset="utf-8">
+  <title>如何重新划分Linux逻辑分区大小</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Xiak&#39;s Blog">
+  <meta name="author" content="Xiak">
+  <meta name="generator" content="Hugo 0.81.0" />
+  
+  
+  <meta property="og:image" content="https://xiak.com/images/blog/keyboard.jpg" />
+  
+  <meta property="og:title" content="如何重新划分Linux逻辑分区大小" />
+<meta property="og:description" content="如何重新划分Linux逻辑分区大小 在工作中遇到过很多因为逻辑" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiak.com/kubernetes/how-to-resize-disk/" /><meta property="article:section" content="kubernetes" />
+<meta property="article:published_time" content="2019-06-19T18:30:00&#43;08:00" />
+<meta property="article:modified_time" content="2019-06-19T18:30:00&#43;08:00" />
+
+
+  
+
+  <!-- plugins -->
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/bootstrap/bootstrap.min.css" media='screen'>
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/Ionicons/css/ionicons.min.css" >
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/magnific-popup/magnific-popup.min.css" >
+  
+  <link rel="stylesheet" href="https://xiak.com/plugins/slick/slick.css" >
+  
+
+  <!-- Main Stylesheet -->
+  
+  <link rel="stylesheet" href="https://xiak.com/scss/style.min.css" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="https://xiak.com/images/favicon.png" type="image/x-icon">
+  <link rel="icon" href="https://xiak.com/images/favicon.png" type="image/x-icon">
+
+</head><body>
+<!-- preloader start -->
+<div class="preloader">
+  
+</div>
+<!-- preloader end -->
+
+<header class="navigation">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        
+        <nav class="navbar">
+          
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+              <img src="https://xiak.com/images/logo.png" alt="XIAK | Community" width="100px" class="img-responsive">
+            </a>
+          </div>
+          
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="nav navbar-nav navbar-right">
+              
+              
+              <li><a href="/">主页</a></li>
+              
+              
+              
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                  aria-expanded="false">博客 <span class="ion-ios-arrow-down"></span></a>
+                <ul class="dropdown-menu">
+                  
+                  <li><a href="/kubernetes">Kubernetes</a></li>
+                  
+                  <li><a href="/algorithm">算法</a></li>
+                  
+                </ul>
+              </li>
+              
+              
+              
+              <li><a href="/contact">联系我</a></li>
+              
+              
+
+              
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="page-title bg-2" style="background-image: url('https://xiak.com/images/featue-bg.jpg');">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="block">
+          <h1>如何重新划分Linux逻辑分区大小</h1>
+          <p></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="page-wrapper">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="post post-single">
+					<h2 class="post-title">如何重新划分Linux逻辑分区大小</h2>
+					<div class="post-meta">
+						<ul>
+              <li><i class="ion-calendar"></i> June 19, 2019</li>
+              <li><i class="ion-android-people"></i>
+                提交人
+                
+                <a class="text-primary" href="/author/xiak">Xiak</a>
+                
+              </li>
+              <li><i class="ion-pricetags"></i> 
+                
+                <a href="/tags/kubernetes">Kubernetes</a>
+								
+                , <a href="/tags/devops">Dev ops</a>
+								
+                , <a href="/tags/linux">Linux</a>
+								
+              </li>
+            </ul>
+					</div>
+					<div class="post-thumb">
+						<img class="img-responsive" src="/images/blog/keyboard.jpg" alt="如何重新划分Linux逻辑分区大小">
+					</div>
+					<div class="post-content post-excerpt">
+						<h1 id="如何重新划分linux逻辑分区大小">如何重新划分Linux逻辑分区大小</h1>
+<p>在工作中遇到过很多因为逻辑分区(Logical Volume)写满导致系统宕机的情况, 这时要么转移数据到其他分区，要么划分更多的磁盘空间给当前逻辑分区, 转移数据的成本是很高的, 那怎么快速，安全给逻辑分区扩容呢?</p>
+<h2 id="准备工作">准备工作</h2>
+<p>本文以 <code>CentOS7</code> 为例, 将 <code>root</code> 用户的用户空间从 <code>50G</code> 扩容到 <code>950G</code>, 希望大家理解原理，能够举一反三。 其他 <code>Linux</code> 如何重新分区, 增容, 缩容欢迎大家留言</p>
+<ul>
+<li>CentOS7</li>
+<li>xfs 文件系统</li>
+</ul>
+<h2 id="开始工作">开始工作</h2>
+<h3 id="查看-disk-状况">查看 disk 状况</h3>
+<p><code>df -h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Filesystem           Size  Used Avail Use% Mounted on
+devtmpfs             9.8G     <span class="m">0</span>  9.8G   0% /dev
+tmpfs                9.9G     <span class="m">0</span>  9.9G   0% /dev/shm
+tmpfs                9.9G   17M  9.8G   1% /run
+tmpfs                9.9G     <span class="m">0</span>  9.9G   0% /sys/fs/cgroup
+/dev/mapper/cl-root   50G  2.3G   48G   5% /
+/dev/sda1           1014M  186M  829M  19% /boot
+/dev/mapper/cl-home  963G   33M  963G   1% /home
+tmpfs                2.0G     <span class="m">0</span>  2.0G   0% /run/user/0
+tmpfs                9.9G   12K  9.9G   1% /var/lib/kubelet/pods/e239e578-3e0d-11e9-bc6f-00505699d344/volumes/kubernetes.io~secret/etcd-certs
+tmpfs                9.9G   12K  9.9G   1% /var/lib/kubelet/pods/e239c969-3e0d-11e9-bc6f-00505699d344/volumes/kubernetes.io~secret/kube-proxy-token-d5jd4
+tmpfs                9.9G   12K  9.9G   1% /var/lib/kubelet/pods/e239e578-3e0d-11e9-bc6f-00505699d344/volumes/kubernetes.io~secret/calico-node-token-hmtlg
+overlay               50G  2.3G   48G   5% /var/lib/docker/overlay2/5628047df066f0294141dabc10969cc5d9931bc560de0149b6c9fc3217749ba8/merged
+overlay               50G  2.3G   48G   5% /var/lib/docker/overlay2/75f4076736685f55328e109bff890a98f90dee748bff9514be2f3d339fc21589/merged
+shm                   64M     <span class="m">0</span>   64M   0% /var/lib/docker/containers/54f04567eb28d31c15a7cba35cf367b49b92e0a041bd09f93439d2e4c4ff1922/mounts/shm
+shm                   64M     <span class="m">0</span>   64M   0% /var/lib/docker/containers/9c2820a58ae955e7e37c2ef9121aba75423d1b1eda9b2e690a44bccdbf84da8c/mounts/shm
+overlay               50G  2.3G   48G   5% /var/lib/docker/overlay2/25404b02f6acf7a2415055537963112784b89dab646a617ea06521ede54096d0/merged
+overlay               50G  2.3G   48G   5% /var/lib/docker/overlay2/8c532f63cb217a809c5975dade783c32d7848079c755ce30d266b5e2dd05aa05/merged
+</code></pre></div><h3 id="备份-home-目录">备份 /home 目录</h3>
+<p><code>cp -r /home/ homebak/</code></p>
+<h3 id="卸载-home-目录">卸载 /home 目录</h3>
+<p><code>umount /home</code></p>
+<p>如果 <code>/home</code> 目录下有进程正在运，使用 <code>fuser -m -v -i -k /home</code> 终止 <code>/home</code> 目录下的进程，最后使用 <code>umount /home</code> 卸载 <code>/home</code></p>
+<h3 id="删除设备">删除设备</h3>
+<p><code>xfs</code> 文件系统不支持减少逻辑分区，无法使用 <code>lvreduce</code>，这里用 <code>lvremove</code> 先删除 <code>/home</code> 所在的lv</p>
+<p><code>lvremove /dev/mapper/cl-home</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Do you really want to remove active logical volume cl/home? <span class="o">[</span>y/n<span class="o">]</span>: y
+  Logical volume <span class="s2">&#34;home&#34;</span> successfully removed
+<span class="o">[</span>root@node1 ~<span class="o">]</span><span class="c1"># lvextend -L +900G /dev/mapper/cl-root</span>
+  Size of logical volume cl/root changed from 50.00 GiB <span class="o">(</span><span class="m">12800</span> extents<span class="o">)</span> to 950.00 GiB <span class="o">(</span><span class="m">243200</span> extents<span class="o">)</span>.
+  Logical volume cl/root successfully resized.
+<span class="o">[</span>root@node1 ~<span class="o">]</span><span class="c1"># xfs_growfs /dev/mapper/cl-root</span>
+meta-data<span class="o">=</span>/dev/mapper/cl-root    <span class="nv">isize</span><span class="o">=</span><span class="m">512</span>    <span class="nv">agcount</span><span class="o">=</span>4, <span class="nv">agsize</span><span class="o">=</span><span class="m">3276800</span> <span class="nv">blks</span>
+         <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">attr</span><span class="o">=</span>2, <span class="nv">projid32bit</span><span class="o">=</span><span class="nv">1</span>
+         <span class="o">=</span>                       <span class="nv">crc</span><span class="o">=</span><span class="m">1</span>        <span class="nv">finobt</span><span class="o">=</span><span class="m">0</span> <span class="nv">spinodes</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">data</span>     <span class="o">=</span>                       <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>13107200, <span class="nv">imaxpct</span><span class="o">=</span><span class="nv">25</span>
+         <span class="o">=</span>                       <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span>      <span class="nv">swidth</span><span class="o">=</span><span class="m">0</span> blks
+<span class="nv">naming</span>   <span class="o">=</span>version <span class="m">2</span>              <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   ascii-ci<span class="o">=</span><span class="m">0</span> <span class="nv">ftype</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">log</span>      <span class="o">=</span>internal               <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>6400, <span class="nv">version</span><span class="o">=</span><span class="nv">2</span>
+         <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span> blks, lazy-count<span class="o">=</span><span class="m">1</span>
+<span class="nv">realtime</span> <span class="o">=</span>none                   <span class="nv">extsz</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>0, <span class="nv">rtextents</span><span class="o">=</span><span class="m">0</span>
+data blocks changed from <span class="m">13107200</span> to <span class="m">249036800</span>
+</code></pre></div><h3 id="查看-vg">查看 vg</h3>
+<p><code>vgdisplay</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--- Volume group ---
+  VG Name               cl
+  System ID
+  Format                lvm2
+  Metadata Areas        <span class="m">1</span>
+  Metadata Sequence No  <span class="m">5</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="m">0</span>
+  Cur LV                <span class="m">2</span>
+  Open LV               <span class="m">2</span>
+  Max PV                <span class="m">0</span>
+  Cur PV                <span class="m">1</span>
+  Act PV                <span class="m">1</span>
+  VG Size               1023.00 GiB
+  PE Size               4.00 MiB
+  Total PE              <span class="m">261887</span>
+  Alloc PE / Size       <span class="m">14064</span> / 54.94 GiB
+  Free  PE / Size       <span class="m">247823</span> / 968.06 GiB
+  VG UUID               oSQeGz-finT-nTPd-RvOx-xr2J-2FQh-nkTldl
+
+</code></pre></div><p>根据 <code>Free  PE / Size</code>  来增加 <code>lv</code>, 注意， <code>Free  PE / Size</code> 一定要留一部分给 <code>/home</code>, 这里 我准备留 <code>68G</code> 给 <code>/home</code>， 其余的都扩展 <code>/root</code></p>
+<h3 id="扩展-root所在的lv增加-900g">扩展 /root所在的lv，增加 900G</h3>
+<p><code>lvextend -L +900G /dev/mapper/cl-root</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Size of logical volume cl/root changed from 50.00 GiB <span class="o">(</span><span class="m">12800</span> extents<span class="o">)</span> to 950.00 GiB <span class="o">(</span><span class="m">243200</span> extents<span class="o">)</span>.
+Logical volume cl/root successfully resized.
+</code></pre></div><h3 id="扩展-root文件系统">扩展 /root文件系统</h3>
+<p><code>xfs_growfs /dev/mapper/cl-root</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">meta-data<span class="o">=</span>/dev/mapper/cl-root    <span class="nv">isize</span><span class="o">=</span><span class="m">512</span>    <span class="nv">agcount</span><span class="o">=</span>4, <span class="nv">agsize</span><span class="o">=</span><span class="m">3276800</span> <span class="nv">blks</span>
+         <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">attr</span><span class="o">=</span>2, <span class="nv">projid32bit</span><span class="o">=</span><span class="nv">1</span>
+         <span class="o">=</span>                       <span class="nv">crc</span><span class="o">=</span><span class="m">1</span>        <span class="nv">finobt</span><span class="o">=</span><span class="m">0</span> <span class="nv">spinodes</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">data</span>     <span class="o">=</span>                       <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>13107200, <span class="nv">imaxpct</span><span class="o">=</span><span class="nv">25</span>
+         <span class="o">=</span>                       <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span>      <span class="nv">swidth</span><span class="o">=</span><span class="m">0</span> blks
+<span class="nv">naming</span>   <span class="o">=</span>version <span class="m">2</span>              <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   ascii-ci<span class="o">=</span><span class="m">0</span> <span class="nv">ftype</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">log</span>      <span class="o">=</span>internal               <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>6400, <span class="nv">version</span><span class="o">=</span><span class="nv">2</span>
+         <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span> blks, lazy-count<span class="o">=</span><span class="m">1</span>
+<span class="nv">realtime</span> <span class="o">=</span>none                   <span class="nv">extsz</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>0, <span class="nv">rtextents</span><span class="o">=</span><span class="m">0</span>
+data blocks changed from <span class="m">13107200</span> to <span class="m">249036800</span>
+</code></pre></div><h3 id="重建-home-的lv">重建 home 的lv</h3>
+<p><code>lvcreate -L 63G -n home cl</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"> Logical volume <span class="s2">&#34;home&#34;</span> created.
+</code></pre></div><h3 id="查看-vg-1">查看 vg</h3>
+<p><code>vgdisplay</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--- Volume group ---
+  VG Name               cl
+  System ID
+  Format                lvm2
+  Metadata Areas        <span class="m">1</span>
+  Metadata Sequence No  <span class="m">7</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="m">0</span>
+  Cur LV                <span class="m">3</span>
+  Open LV               <span class="m">1</span>
+  Max PV                <span class="m">0</span>
+  Cur PV                <span class="m">1</span>
+  Act PV                <span class="m">1</span>
+  VG Size               1023.00 GiB
+  PE Size               4.00 MiB
+  Total PE              <span class="m">261887</span>
+  Alloc PE / Size       <span class="m">261840</span> / 1022.81 GiB
+  Free  PE / Size       <span class="m">47</span> / 188.00 MiB
+  VG UUID               lIOQS4-KiX0-yfvd-5iJO-BqPm-WIIx-7uie2W
+</code></pre></div><p>查看 <code>Free  PE / Size</code> 是否被分配完了</p>
+<h3 id="格式化创建文件系统">格式化创建文件系统</h3>
+<p><code>mkfs.xfs /dev/cl/home</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">meta-data<span class="o">=</span>/dev/cl/home           <span class="nv">isize</span><span class="o">=</span><span class="m">512</span>    <span class="nv">agcount</span><span class="o">=</span>4, <span class="nv">agsize</span><span class="o">=</span><span class="m">4128768</span> <span class="nv">blks</span>
+         <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">attr</span><span class="o">=</span>2, <span class="nv">projid32bit</span><span class="o">=</span><span class="nv">1</span>
+         <span class="o">=</span>                       <span class="nv">crc</span><span class="o">=</span><span class="m">1</span>        <span class="nv">finobt</span><span class="o">=</span>0, <span class="nv">sparse</span><span class="o">=</span><span class="m">0</span>
+<span class="nv">data</span>     <span class="o">=</span>                       <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>16515072, <span class="nv">imaxpct</span><span class="o">=</span><span class="nv">25</span>
+         <span class="o">=</span>                       <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span>      <span class="nv">swidth</span><span class="o">=</span><span class="m">0</span> blks
+<span class="nv">naming</span>   <span class="o">=</span>version <span class="m">2</span>              <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   ascii-ci<span class="o">=</span><span class="m">0</span> <span class="nv">ftype</span><span class="o">=</span><span class="m">1</span>
+<span class="nv">log</span>      <span class="o">=</span>internal log           <span class="nv">bsize</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>8064, <span class="nv">version</span><span class="o">=</span><span class="nv">2</span>
+         <span class="o">=</span>                       <span class="nv">sectsz</span><span class="o">=</span><span class="m">512</span>   <span class="nv">sunit</span><span class="o">=</span><span class="m">0</span> blks, lazy-count<span class="o">=</span><span class="m">1</span>
+<span class="nv">realtime</span> <span class="o">=</span>none                   <span class="nv">extsz</span><span class="o">=</span><span class="m">4096</span>   <span class="nv">blocks</span><span class="o">=</span>0, <span class="nv">rtextents</span><span class="o">=</span><span class="m">0</span>
+</code></pre></div><h3 id="重新挂载-home-目录">重新挂载 home 目录</h3>
+<p><code>mount /dev/cl/home /home</code></p>
+<h3 id="还原-home-目录数据">还原 home 目录数据</h3>
+<p><code>cp -R ./homebak/* /home</code></p>
+<p>###　查看磁盘情况</p>
+<p><code>df -h</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">Filesystem           Size  Used Avail Use% Mounted on
+devtmpfs             9.8G     <span class="m">0</span>  9.8G   0% /dev
+tmpfs                9.9G     <span class="m">0</span>  9.9G   0% /dev/shm
+tmpfs                9.9G   17M  9.8G   1% /run
+tmpfs                9.9G     <span class="m">0</span>  9.9G   0% /sys/fs/cgroup
+/dev/mapper/cl-root  950G  2.3G  948G   1% /
+/dev/sda1           1014M  186M  829M  19% /boot
+tmpfs                2.0G     <span class="m">0</span>  2.0G   0% /run/user/0
+tmpfs                9.9G   12K  9.9G   1% /var/lib/kubelet/pods/e239e578-3e0d-11e9-bc6f-00505699d344/volumes/kubernetes.io~secret/etcd-certs
+tmpfs                9.9G   12K  9.9G   1% /var/lib/kubelet/pods/e239c969-3e0d-11e9-bc6f-00505699d344/volumes/kubernetes.io~secret/kube-proxy-token-d5jd4
+tmpfs                9.9G   12K  9.9G   1% /var/lib/kubelet/pods/e239e578-3e0d-11e9-bc6f-00505699d344/volumes/kubernetes.io~secret/calico-node-token-hmtlg
+overlay              950G  2.3G  948G   1% /var/lib/docker/overlay2/5628047df066f0294141dabc10969cc5d9931bc560de0149b6c9fc3217749ba8/merged
+overlay              950G  2.3G  948G   1% /var/lib/docker/overlay2/75f4076736685f55328e109bff890a98f90dee748bff9514be2f3d339fc21589/merged
+shm                   64M     <span class="m">0</span>   64M   0% /var/lib/docker/containers/54f04567eb28d31c15a7cba35cf367b49b92e0a041bd09f93439d2e4c4ff1922/mounts/shm
+shm                   64M     <span class="m">0</span>   64M   0% /var/lib/docker/containers/9c2820a58ae955e7e37c2ef9121aba75423d1b1eda9b2e690a44bccdbf84da8c/mounts/shm
+overlay              950G  2.3G  948G   1% /var/lib/docker/overlay2/25404b02f6acf7a2415055537963112784b89dab646a617ea06521ede54096d0/merged
+overlay              950G  2.3G  948G   1% /var/lib/docker/overlay2/8c532f63cb217a809c5975dade783c32d7848079c755ce30d266b5e2dd05aa05/merged
+/dev/mapper/cl-home   63G   33M   63G   1% /home
+</code></pre></div><p>可以看到 <code>/dev/mapper/cl-home</code> 从 <code>963G</code> 减少到了 <code>63G</code></p>
+<p><code>/dev/mapper/cl-root</code> 从 <code>50G</code> 增加到了 <code>950G</code></p>
+<p>##　如果新增加硬盘</p>
+<h3 id="手动给主机增加-100g-硬盘">手动给主机增加 100G 硬盘</h3>
+<h3 id="扫描-scsi总线并添加-scsi-设备">扫描 SCSI总线并添加 SCSI 设备</h3>
+<p><code>for host in $(ls /sys/class/scsi_host) ; do echo &quot;- - -&quot; &gt; /sys/class/scsi_host/$host/scan; done</code></p>
+<h3 id="重新扫描-scsi-总线">重新扫描 SCSI 总线</h3>
+<p><code>for scsi_device in $(ls /sys/class/scsi_device/); do echo 1 &gt; /sys/class/scsi_device/$scsi_device/device/rescan; done</code></p>
+<p>###　查看已添加的磁盘，能够看到sdb说明添加成功</p>
+<p><code>lsblk</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+fd0           2:0    <span class="m">1</span>    4K  <span class="m">0</span> disk
+sda           8:0    <span class="m">0</span>    1T  <span class="m">0</span> disk
+├─sda1        8:1    <span class="m">0</span>    1G  <span class="m">0</span> part /boot
+└─sda2        8:2    <span class="m">0</span> 1023G  <span class="m">0</span> part
+  ├─cl-root 253:0    <span class="m">0</span>  950G  <span class="m">0</span> lvm  /
+  ├─cl-swap 253:1    <span class="m">0</span>  7.9G  <span class="m">0</span> lvm
+  └─cl-home 253:2    <span class="m">0</span>   63G  <span class="m">0</span> lvm  /home
+sdb           8:16   <span class="m">0</span>  100G  <span class="m">0</span> disk
+sr0          11:0    <span class="m">1</span> 1024M  <span class="m">0</span> rom
+</code></pre></div><p>看到 <code>sdb 100G</code> 就是我们新增的硬盘</p>
+<h3 id="初始化磁盘">初始化磁盘</h3>
+<p><code> pvcreate /dev/sdb</code></p>
+<h3 id="查看物理信息">查看物理信息</h3>
+<p><code>pvdisplay</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"> --- Physical volume ---
+  PV Name               /dev/sda2
+  VG Name               cl
+  PV Size               499.00 GiB / not usable 3.00 MiB
+  Allocatable           yes
+  PE Size               4.00 MiB
+  Total PE              <span class="m">127743</span>
+  Free PE               <span class="m">31</span>
+  Allocated PE          <span class="m">127712</span>
+  PV UUID               s8zPrU-Ffcy-UJzD-YpQb-lHNe-Gc7K-MynwBK
+
+  <span class="s2">&#34;/dev/sdb&#34;</span> is a new physical volume of <span class="s2">&#34;100.00 GiB&#34;</span>
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb
+  VG Name
+  PV Size               100.00 GiB
+  Allocatable           NO
+  PE Size               <span class="m">0</span>
+  Total PE              <span class="m">0</span>
+  Free PE               <span class="m">0</span>
+  Allocated PE          <span class="m">0</span>
+  PV UUID               aCtCCE-c0Al-2kR1-1AN5-c2Ll-3q07-cFSbFz
+</code></pre></div><h3 id="创建逻辑卷组-vg将devsdb物理卷加入到这个卷组里">创建逻辑卷组 vg,将/dev/sdb物理卷加入到这个卷组里</h3>
+<p><code>vgcreate cl2 /dev/sdb</code></p>
+<h3 id="查看逻辑卷组">查看逻辑卷组</h3>
+<p><code>vgdisplay</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">--- Volume group ---
+  VG Name               cl
+  System ID
+  Format                lvm2
+  Metadata Areas        <span class="m">1</span>
+  Metadata Sequence No  <span class="m">6</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="m">0</span>
+  Cur LV                <span class="m">2</span>
+  Open LV               <span class="m">2</span>
+  Max PV                <span class="m">0</span>
+  Cur PV                <span class="m">1</span>
+  Act PV                <span class="m">1</span>
+  VG Size               499.00 GiB
+  PE Size               4.00 MiB
+  Total PE              <span class="m">127743</span>
+  Alloc PE / Size       <span class="m">127712</span> / 498.88 GiB
+  Free  PE / Size       <span class="m">31</span> / 124.00 MiB
+  VG UUID               AdQDAa-TS1n-p8yO-1207-klLV-9nLf-CY622o
+
+  --- Volume group ---
+  VG Name               cl2
+  System ID
+  Format                lvm2
+  Metadata Areas        <span class="m">1</span>
+  Metadata Sequence No  <span class="m">1</span>
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                <span class="m">0</span>
+  Cur LV                <span class="m">0</span>
+  Open LV               <span class="m">0</span>
+  Max PV                <span class="m">0</span>
+  Cur PV                <span class="m">1</span>
+  Act PV                <span class="m">1</span>
+  VG Size               100.00 GiB
+  PE Size               4.00 MiB
+  Total PE              <span class="m">25599</span>
+  Alloc PE / Size       <span class="m">0</span> / <span class="m">0</span>
+  Free  PE / Size       <span class="m">25599</span> / 100.00 GiB
+  VG UUID               MnZkLp-FwDf-jffM-tUu8-Q3KC-XFX7-zIpzCf
+</code></pre></div><h3 id="创建逻辑卷">创建逻辑卷</h3>
+<p><code>lvcreate -L 99G -n home cl2</code></p>
+<h3 id="格式化">格式化</h3>
+<p><code> mkfs.xfs /dev/cl2/home</code></p>
+<h3 id="重新挂载-home-目录-1">重新挂载 home 目录</h3>
+<p><code>mount /dev/cl2/home /home</code></p>
+<h2 id="附录">附录</h2>
+<h3 id="如何开机自动挂载">如何开机自动挂载</h3>
+<p>如何开机自动挂载 <code>/dev/cl3/ceph</code> 到 <code>/ceph</code> ?</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt;&gt; /etc/fstab <span class="s">&lt;&lt;EOF
+</span><span class="s">/dev/mapper/cl3-ceph    /ceph                   xfs     defaults        0 0
+</span><span class="s">EOF</span>
+</code></pre></div><h3 id="如何清空磁盘数据">如何清空磁盘数据</h3>
+<p><code>dd if=/dev/zero of=/dev/sdc bs=512 count=1</code></p>
+
+					</div>
+					<div class="post-comments">
+						
+					</div>
+				</div>
+			</div>
+      <div class="col-md-4">
+        <aside class="sidebar"><div class="widget widget-latest-post">
+    <h4 class="widget-title">最近提交</h4>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/add-two-numbers-1/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/add-two-numbers-1/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 2. 两数相加 题干 给你两个 非空 的链表，表示两个非负的整数。</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/calculator/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/calculator/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 面试题 16.26. 计算器 题干 给定一个包含正整数、加(+)、减(-</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/daily-temperatures/">
+        <img class="media-object" src="/images/blog/work.jpg" alt="两数相加: 常规算法和原地算法">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/daily-temperatures/">两数相加: 常规算法和原地算法</a></h4>
+        <p>Leetcode 链接 739. 每日温度 题干 请根据每日 气温 列表，重新生成一个列表。对</p>
+      </div>
+    </div>
+    
+    <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/list/">
+        <img class="media-object" src="/images/blog/caffe.jpg" alt="链表设计">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/list/">链表设计</a></h4>
+        <p>Leetcode 链接 707. 设计链表 题干 设计链表的实现。您可以选择使用单链表或双</p>
+      </div>
+    </div>
+    
+  </div><div class="widget widget-category">
+    <h4 class="widget-title">分类</h4>
+    <ul class="widget-category-list">
+      <li><a href="/categories/algorithm">Algorithm</a></li>
+      <li><a href="/categories/kubernetes">Kubernetes</a></li>
+    </ul>
+  </div><div class="widget widget-tag">
+    <h4 class="widget-title">标签</h4>
+    <ul class="widget-tag-list">
+      <li><a href="/tags/devops">Devops</a></li>
+      <li><a href="/tags/interview">Interview</a></li>
+      <li><a href="/tags/kubernetes">Kubernetes</a></li>
+      <li><a href="/tags/leetcode">Leetcode</a></li>
+      <li><a href="/tags/linux">Linux</a></li>
+      <li><a href="/tags/list">List</a></li>
+    </ul>
+  </div></aside>
+
+      </div>
+		</div>
+	</div>
+</section>
+
+<footer class="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="footer-manu">
+					<ul>
+            
+					</ul>
+				</div>
+				<p class="copyright">Copyright © 2021 XIAK 保留所有权利</p>
+			</div>
+		</div>
+	</div>
+</footer>
+
+
+
+
+
+
+<script src="https://xiak.com/plugins/jQuery/jquery.min.js" ></script>
+
+<script src="https://xiak.com/plugins/bootstrap/bootstrap.min.js" ></script>
+
+<script src="https://xiak.com/plugins/slick/slick.min.js" ></script>
+
+<script src="https://xiak.com/plugins/magnific-popup/magnific-popup.min.js" ></script>
+
+<script src="https://xiak.com/plugins/shuffle/shuffle.min.js" ></script>
+
+<script src="https://xiak.com/plugins/google-map/gmap.js" defer></script>
+
+
+
+
+<script src="https://xiak.com/js/script.min.js"></script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+<div id="js-cookie-box" class="cookie-box cookie-box-hide">
+	使用 cookies 可以提高本站的性能, 本站不会通过 cookies 获取用户任何信息, 是否同意使用 cookies <span id="js-cookie-button" class="btn btn-small btn-solid-border" style="margin: 10px">同意</span>
+</div>
+<script>
+	(function ($) {
+		const cookieBox = document.getElementById('js-cookie-box');
+		const cookieButton = document.getElementById('js-cookie-button');
+		if (!Cookies.get('cookie-box')) {
+			cookieBox.classList.remove('cookie-box-hide');
+			cookieButton.onclick = function () {
+				Cookies.set('cookie-box', true, {
+					expires:  2 
+				});
+				cookieBox.classList.add('cookie-box-hide');
+			};
+		}
+	})(jQuery);
+</script>
+
+
+<style>
+.cookie-box {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  z-index: 9999;
+  padding: 1rem 2rem;
+  background: rgb(71, 71, 71);
+  transition: all .75s cubic-bezier(.19, 1, .22, 1);
+  color: #fdfdfd;
+}
+
+.cookie-box-hide {
+  display: none;
+}
+</style>
+</body>
+
+</html>

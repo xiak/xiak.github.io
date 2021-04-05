@@ -79,6 +79,8 @@
                   aria-expanded="false">博客 <span class="ion-ios-arrow-down"></span></a>
                 <ul class="dropdown-menu">
                   
+                  <li><a href="/kubernetes">Kubernetes</a></li>
+                  
                   <li><a href="/algorithm">算法</a></li>
                   
                 </ul>
@@ -141,15 +143,17 @@
 						<h3 id="leetcode-链接">Leetcode 链接</h3>
 <p><a href="https://leetcode-cn.com/problems/daily-temperatures/">739. 每日温度</a></p>
 <h3 id="题干">题干</h3>
-<p>请根据每日 <code>气温</code> 列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要<code>等待的天数</code>。如果气温在这之后都不会升高，请在该位置用 <code>0</code> 来代替。</p>
+<p>请根据每日 <code>气温</code> 列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要<code>等待的天数</code>。如果气温在这之后都不会升高，请在该位置用 <code>0</code> 来代替。</p>
 <p>例如，</p>
-<pre><code>给定一个列表 temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+<pre><code>给定一个列表 temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
 
-你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]
+你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]
 </code></pre><blockquote>
-<p>提示：气温 列表长度的范围是 <code>[1, 30000]</code>。每个气温的值的均为华氏度，都是在 <code>[30, 100]</code> 范围内的整数。</p>
+<p>提示：气温 列表长度的范围是<code>[1, 30000]</code>。每个气温的值的均为华氏度，都是在<code>[30, 100]</code>范围内的整数。</p>
 </blockquote>
 <h3 id="思路">思路</h3>
+<h4 id="暴力算法">暴力算法</h4>
+<h4 id="单调栈">单调栈</h4>
 <h3 id="实现">实现</h3>
 <p>非原地算法</p>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang">
@@ -224,12 +228,16 @@
     <h4 class="widget-title">分类</h4>
     <ul class="widget-category-list">
       <li><a href="/categories/algorithm">Algorithm</a></li>
+      <li><a href="/categories/kubernetes">Kubernetes</a></li>
     </ul>
   </div><div class="widget widget-tag">
     <h4 class="widget-title">标签</h4>
     <ul class="widget-tag-list">
+      <li><a href="/tags/devops">Devops</a></li>
       <li><a href="/tags/interview">Interview</a></li>
+      <li><a href="/tags/kubernetes">Kubernetes</a></li>
       <li><a href="/tags/leetcode">Leetcode</a></li>
+      <li><a href="/tags/linux">Linux</a></li>
       <li><a href="/tags/list">List</a></li>
     </ul>
   </div></aside>
