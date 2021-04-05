@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     <copyright>Copyright &amp;copy; 2021 XIAK 保留所有权利</copyright>
-    <lastBuildDate>Wed, 19 Jun 2019 18:30:00 +0800</lastBuildDate><atom:link href="https://xiak.com/categories/devops/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Nov 2019 12:35:00 +0800</lastBuildDate><atom:link href="https://xiak.com/categories/devops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 govc 部署 ova 和 ovf</title>
+      <link>https://xiak.com/devops/how-to-deploy-ova-or-ovf/</link>
+      <pubDate>Thu, 28 Nov 2019 12:35:00 +0800</pubDate>
+      
+      <guid>https://xiak.com/devops/how-to-deploy-ova-or-ovf/</guid>
+      <description>使用 govc 部署 ova 和 ovf govc 是 vmware 官方开发的一个命令行 client, 用 golang 编写, 实现了</description>
+    </item>
+    
     <item>
       <title>如何重新划分Linux逻辑分区大小</title>
       <link>https://xiak.com/devops/how-to-resize-disk/</link>
