@@ -150,7 +150,7 @@
 <li>第一步 集群规划</li>
 <li>第二步 安装 Loadbalancer 集群</li>
 <li>第三步 安装独立的 ETCD 集群</li>
-<li>第四步 创建 kubernetes api 节点</li>
+<li>第四步 创建 kubernetes master 节点</li>
 <li>第五步 安装网络插件</li>
 <li>第六步 添加节点到创建好的集群中</li>
 </ul>
@@ -222,7 +222,7 @@
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.3    k8s-etcd-1
 10.10.10.4    k8s-etcd-2
 10.10.10.5    k8s-etcd-3
-</code></pre></div><p>在第一步中定义了三台主机作为 kubernetes api server</p>
+</code></pre></div><p>在第一步中定义了三台主机作为 <code>kubernetes master</code></p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">10.10.10.6    k8s-master-1
 10.10.10.7    k8s-master-2
 10.10.10.8    k8s-master-3
