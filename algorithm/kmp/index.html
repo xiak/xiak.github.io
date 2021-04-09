@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh"><head>
   <meta charset="utf-8">
-  <title>面试题 16.26. 计算器</title>
+  <title>28. 实现 strStr</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,14 +10,14 @@
   <meta name="generator" content="Hugo 0.81.0" />
   
   
-  <meta property="og:image" content="https://xiak.com/images/blog/work.jpg" />
+  <meta property="og:image" content="https://xiak.com/images/blog/book.jpg" />
   
-  <meta property="og:title" content="面试题 16.26. 计算器" />
-<meta property="og:description" content="Leetcode 链接 面试题 16.26. 计算器 题干 给定一个包含正整数、加(&#43;)、减(-" />
+  <meta property="og:title" content="28. 实现 strStr" />
+<meta property="og:description" content="Leetcode 链接 28. 实现 strStr 题干 实现 strStr() 函数。 给定一个 haystack 字符串和一个 needle 字符串" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiak.com/algorithm/calculator/" /><meta property="article:section" content="algorithm" />
-<meta property="article:published_time" content="2021-04-01T21:05:00&#43;08:00" />
-<meta property="article:modified_time" content="2021-04-01T21:05:00&#43;08:00" />
+<meta property="og:url" content="https://xiak.com/algorithm/kmp/" /><meta property="article:section" content="algorithm" />
+<meta property="article:published_time" content="2021-04-09T18:30:00&#43;08:00" />
+<meta property="article:modified_time" content="2021-04-09T18:30:00&#43;08:00" />
 
 
   
@@ -106,7 +106,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="block">
-          <h1>面试题 16.26. 计算器</h1>
+          <h1>28. 实现 strStr</h1>
           <p></p>
         </div>
       </div>
@@ -119,10 +119,10 @@
 		<div class="row">
 			<div class="col-md-8">
 				<div class="post post-single">
-					<h2 class="post-title">面试题 16.26. 计算器</h2>
+					<h2 class="post-title">28. 实现 strStr</h2>
 					<div class="post-meta">
 						<ul>
-              <li><i class="ion-calendar"></i> April 1, 2021</li>
+              <li><i class="ion-calendar"></i> April 9, 2021</li>
               <li><i class="ion-android-people"></i>
                 提交人
                 
@@ -133,46 +133,95 @@
                 
                 <a href="/tags/leetcode">Leetcode</a>
 								
-                , <a href="/tags/interview">Interview</a>
-								
               </li>
             </ul>
 					</div>
 					<div class="post-thumb">
-						<img class="img-responsive" src="/images/blog/work.jpg" alt="面试题 16.26. 计算器">
+						<img class="img-responsive" src="/images/blog/book.jpg" alt="28. 实现 strStr">
 					</div>
 					<div class="post-content post-excerpt">
 						<h3 id="leetcode-链接">Leetcode 链接</h3>
-<p><a href="https://leetcode-cn.com/problems/calculator-lcci/">面试题 16.26. 计算器</a></p>
+<p><a href="https://leetcode-cn.com/problems/implement-strstr/">28. 实现 strStr</a></p>
 <h3 id="题干">题干</h3>
-<p>给定一个包含正整数、加(+)、减(-)、乘(*)、除(/)的算数表达式(括号除外)，计算其结果。</p>
-<p>表达式仅包含非负整数，+， - ，*，/ 四种运算符和空格  。 整数除法仅保留整数部分。</p>
-<p>示例 1：</p>
-<p><img src="/images/algorithm/add-two-num-1.jpg" alt="add-two-numbers"></p>
-<pre><code>输入: &quot;3+2*2&quot;
-输出: 7
-</code></pre><p>示例 2：</p>
-<pre><code>输入: &quot; 3/2 &quot;
-输出: 1
-</code></pre><p>示例 3：</p>
-<pre><code>输入: &quot; 3+5 / 2 &quot;
-输出: 5
+<p>实现 <code>strStr()</code> 函数。</p>
+<p>给定一个 <code>haystack</code> 字符串和一个 <code>needle</code> 字符串，在 <code>haystack</code> 字符串中找出 <code>needle</code> 字符串出现的第一个位置 (从0开始)。如果不存在，则返回 -1。</p>
+<p>示例 1:</p>
+<pre><code>输入: haystack = &quot;hello&quot;, needle = &quot;ll&quot;
+输出: 2
+</code></pre><p>示例 2:</p>
+<pre><code>输入: haystack = &quot;aaaaa&quot;, needle = &quot;bba&quot;
+输出: -1
 </code></pre><blockquote>
-<p>提示：</p>
+<p>说明:</p>
 <ul>
-<li>你可以假设所给定的表达式都是有效的。</li>
-<li>请不要使用内置的库函数 eval。</li>
+<li>当 <code>needle</code> 是空字符串时，我们应当返回什么值呢？这是一个在面试中很好的问题。</li>
+<li>对于本题而言，当 needle 是空字符串时我们应当返回 0 。这与C语言的 strstr() 以及 Java的 indexOf() 定义相符。</li>
 </ul>
 </blockquote>
 <h3 id="思路">思路</h3>
-<p>分析:</p>
+<p>分析: 字符串匹配的问题有几种解法</p>
+<ul>
+<li>
+<p>BF (略)</p>
+</li>
+<li>
+<p>BM (待续)</p>
+</li>
+<li>
+<p>KMP</p>
+</li>
+</ul>
+<p><a href="https://www.zhihu.com/question/21923021">如何更好地理解和掌握 KMP 算法?</a></p>
+<p><a href="https://www.bilibili.com/video/BV1jb411V78H?from=search&amp;seid=9213718721515748230">Bilibili KMP算法易懂版</a></p>
+<p>KMP 比较难理解, 其关键就是找 <code>next</code> 数组, 可以参考以上文章了解</p>
 <h3 id="实现">实现</h3>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang">
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">kpm</span>
+
+<span class="kd">func</span> <span class="nf">GetNext</span><span class="p">(</span><span class="nx">p</span> <span class="kt">string</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="nx">next</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">length</span><span class="p">)</span>
+    <span class="nx">next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="nx">j</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="nx">p</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">{</span>
+        	<span class="nx">i</span><span class="o">++</span>
+        	<span class="nx">j</span><span class="o">++</span>
+        	<span class="nx">next</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">j</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        	<span class="nx">j</span> <span class="p">=</span> <span class="nx">next</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+        <span class="p">}</span>   
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">next</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">Kpm</span><span class="p">(</span><span class="nx">t</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">p</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">pLen</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">pLen</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="mi">0</span>
+    <span class="p">}</span>
+    <span class="nx">tLen</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+    <span class="nx">i</span><span class="p">,</span> <span class="nx">j</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="nx">next</span> <span class="o">:=</span> <span class="nf">GetNext</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">tLen</span> <span class="o">&amp;&amp;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">pLen</span> <span class="p">{</span>
+    	<span class="k">if</span> <span class="nx">j</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="nx">t</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="nx">p</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">{</span>
+    		<span class="nx">i</span><span class="o">++</span>
+    		<span class="nx">j</span><span class="o">++</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        	<span class="nx">j</span> <span class="p">=</span> <span class="nx">next</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="k">if</span> <span class="nx">j</span> <span class="o">==</span> <span class="nx">pLen</span> <span class="p">{</span>
+    	<span class="k">return</span> <span class="nx">i</span> <span class="o">-</span> <span class="nx">j</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    	<span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div><h3 id="benchmark">Benchmark</h3>
-<pre><code>执行用时： ms
-内存消耗： MB
+<pre><code>执行用时：0 ms, 在所有 Go 提交中击败了 100.00% 的用户
+内存消耗：2.5 MB, 在所有 Go 提交中击败了 13.27% 的用户
 </code></pre><h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
-<p><a href="">常规算法</a></p>
+<p><a href="https://leetcode-cn.com/submissions/detail/165794544/">常规算法</a></p>
 
 					</div>
 					<div class="post-comments">
