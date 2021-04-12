@@ -13,11 +13,11 @@
   <meta property="og:image" content="https://xiak.com/images/blog/web-browse.jpg" />
   
   <meta property="og:title" content="739. 每日温度" />
-<meta property="og:description" content="Leetcode 链接 739. 每日温度 题干 请根据每日 气温 列表，重新生成一个列表。对" />
+<meta property="og:description" content="Leetcode 链接 [739. 每日温度] 题干 请根据每日 气温 列表，重新生成一个列表。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://xiak.com/algorithm/daily-temperatures/" /><meta property="article:section" content="algorithm" />
-<meta property="article:published_time" content="2021-04-02T11:59:00&#43;08:00" />
-<meta property="article:modified_time" content="2021-04-02T11:59:00&#43;08:00" />
+<meta property="article:published_time" content="2021-04-12T13:55:00&#43;08:00" />
+<meta property="article:modified_time" content="2021-04-12T13:55:00&#43;08:00" />
 
 
   
@@ -122,7 +122,7 @@
 					<h2 class="post-title">739. 每日温度</h2>
 					<div class="post-meta">
 						<ul>
-              <li><i class="ion-calendar"></i> April 2, 2021</li>
+              <li><i class="ion-calendar"></i> April 12, 2021</li>
               <li><i class="ion-android-people"></i>
                 提交人
                 
@@ -133,6 +133,8 @@
                 
                 <a href="/tags/leetcode">Leetcode</a>
 								
+                , <a href="/tags/kmp">Kmp</a>
+								
               </li>
             </ul>
 					</div>
@@ -141,7 +143,7 @@
 					</div>
 					<div class="post-content post-excerpt">
 						<h3 id="leetcode-链接">Leetcode 链接</h3>
-<p><a href="https://leetcode-cn.com/problems/daily-temperatures/">739. 每日温度</a></p>
+<p>[739. 每日温度]</p>
 <h3 id="题干">题干</h3>
 <p>请根据每日 <code>气温</code> 列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要<code>等待的天数</code>。如果气温在这之后都不会升高，请在该位置用 <code>0</code> 来代替。</p>
 <p>例如，</p>
@@ -162,36 +164,123 @@
 <h4 id="kmp-算法">KMP 算法</h4>
 <p><a href="https://www.zhihu.com/question/21923021">如何更好地理解和掌握 KMP 算法?</a></p>
 <p><a href="https://www.bilibili.com/video/BV1jb411V78H?from=search&amp;seid=9213718721515748230">Bilibili KMP算法易懂版</a></p>
-<p>ababacd</p>
-<p>a
-ab
-aba
-abab
-ababc
-ababacd</p>
-<ul>
+<p>假设数组长度为 <code>length := len(temperatures)</code></p>
+<p>设置两个指针 <code>w (walk): 从列表倒数第二位开始，向列表头遍历</code> 和 <code>c (current): 目的是找到 walk 指针后最大的数字</code></p>
+<p>还需要一个数组 <code>next: 存放每个位置气温升高需要等待的天数</code></p>
+<p>例如:</p>
+<pre><code>Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+
+初始化 next 数组
+next:  0   0   0   0   0   0   0   0
+
+第一次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+                               w   c   76 &gt; 73 并且 next[7] == 0 (表示 73 后没有比 73 更大的数字了), 以此知道 76 之后没有比 76 更大的数字了, 所以 next[6] = 0
+next:                          0   0
+                               
+第二次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+                           w   c       75 &lt; 76,  ok 找到比 75 更大的数, 步长为 next[5] = c - w = 1
+next:                      1    0   0 
+
+第三次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+                       w   c           69 &lt; 75,  ok 找到比 69 更大的数, 步长为 next[4] = c - w = 1
+next:                  1   1   0   0     
+
+第四次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+                   w   c               71 &gt; 69, 需要找到比 71(List[3]) 大的数字, 可以直接找比 69 大的数字的位置
+                   w       c           next[4] = 1 表示比 69(List[4]) 大的数字位置为 c = c + next[4] = 4 + 1 = 5, List[5] 为 75
+                                       71 &lt; 75, ok 找到比 71(List[3]) 更大的数, 步长为 next[3] = c - w = 5 - 3 = 2
+next:              2   1   1   0   0     
+
+第五次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+               w   c                   75 &gt; 71, 需要找到比 75 大的数字, 可以直接找比 71 大的数字的位置
+               w           c           next[3] = 2 表示比 71(List[3]) 大的数字位置为 c = c + next[3] = 3 + 2 = 5, List[5] 为 75
+                                       75 == 75, 继续找比 75(List[5]) 大的数
+                                       查表 next[5] = 1, c = c + next[5] = 5 + 1 = 6, List[6] 为 76
+               w               c       75 &lt; 76, ok 找到比 75(List[2]) 更大的数, 步长为 next[2] = c - w = 6 - 2 = 4
+next:          4   2   1   1   0   0     
+               
+第六次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+           w   c                       74 &lt; 75,  ok 找到比 74 更大的数, 步长为 next[1] = c - w = 2 - 1 = 1
+next:      1   4   2   1   1   0   0
+
+
+第七次比较
+Index: 0   1   2   3   4   5   6   7
+List:  73  74  75  71  69  75  76  73
+       w   c                           73 &lt; 74,  ok 找到比 73 更大的数, 步长为 next[0] = c - w = 1 - 0 = 1
+next:  1   1   4   2   1   1   0   0  
+   
+比较完成 next 数组即为所求
+</code></pre><ul>
 <li>时间复杂度为 O(x+y)</li>
+<li>空间复杂度为 O(x)</li>
 </ul>
 <h4 id="单调栈">单调栈</h4>
+<p>(暂略)</p>
 <h3 id="实现">实现</h3>
-<p>非原地算法</p>
-<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang">
-</code></pre></div><h3 id="benchmark">Benchmark</h3>
-<pre><code>原地算法:
-执行用时：8 ms, 在所有 Go 提交中击败了 92.82% 的用户
-内存消耗：4.4 MB, 在所有 Go 提交中击败了 99.94%的用户
+<div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang"><span class="kn">package</span> <span class="nx">algorithm</span>
 
-非原地算法:
-执行用时：8 ms, 在所有 Go 提交中击败了 92.82% 的用户
-内存消耗：4.6 MB, 在所有 Go 提交中击败了 99.44% 的用户
-</code></pre><p>时间复杂度都为 <code>O(Max(L1, L2))</code></p>
-<p>原地算法, 没有额外的空间产生, 空间复杂度为 <code>O(1)</code></p>
-<p>非原地算法, 分配了一个额外存储链表, 长度为 <code>MAX(L1, L2)</code> 空间复杂度为 <code>O(MAX(L1, L2))</code></p>
-<blockquote>
-<p>原地算法使用前提: 如果实际开发中需要保持输入的两个链表 <code>L1 和 L2</code> 的值不变的话, 不能用原地算法</p>
-</blockquote>
-<h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
-<p><a href="https://leetcode-cn.com/submissions/detail/158329734/">常规算法</a></p>
+<span class="c1">// 方法一: 暴力迭代
+</span><span class="c1">// 时间复杂度 O(MN), 空间复杂度 O(1)
+</span><span class="c1">// 运行时间 1108 ms, 内存消耗 7 MB
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">dailyTemperatures</span><span class="p">(</span><span class="nx">T</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">T</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">j</span> <span class="o">:=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">j</span> <span class="p">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="nx">T</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">&lt;</span> <span class="nx">T</span><span class="p">[</span><span class="nx">j</span><span class="p">]</span> <span class="p">{</span>
+				<span class="nx">T</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">j</span> <span class="o">-</span> <span class="nx">i</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="nx">j</span> <span class="o">==</span> <span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">{</span>
+				<span class="nx">T</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="mi">0</span>
+				<span class="k">break</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">T</span><span class="p">[</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="mi">0</span>
+	<span class="k">return</span> <span class="nx">T</span>
+<span class="p">}</span>
+
+<span class="c1">// 方法二: 类 KMP
+</span><span class="c1">// 时间复杂度 O(m+n). 空间复杂度 O(n)
+</span><span class="c1">// 运行时间 60 ms, 内存消耗 7.4 MB
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">dailyTemperatures</span><span class="p">(</span><span class="nx">T</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">T</span><span class="p">)</span>
+	<span class="nx">next</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">length</span><span class="p">)</span>
+	<span class="kd">var</span> <span class="nx">w</span><span class="p">,</span> <span class="nx">c</span> <span class="kt">int</span>
+	<span class="c1">// walk and current 
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">w</span> <span class="p">=</span> <span class="nx">length</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span> <span class="nx">w</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">w</span><span class="o">--</span> <span class="p">{</span>
+		<span class="nx">c</span> <span class="p">=</span> <span class="nx">w</span> <span class="o">+</span> <span class="mi">1</span>
+		<span class="c1">// 后面的数比当前数小, 根据 next 数组找到比 T[c] 更大的数再做比较
+</span><span class="c1"></span>		<span class="k">for</span> <span class="nx">T</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nx">T</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="nx">next</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">{</span>
+				<span class="nx">c</span> <span class="o">+=</span> <span class="nx">next</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            	<span class="k">break</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+		<span class="k">if</span> <span class="nx">T</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="p">&lt;</span> <span class="nx">T</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span> <span class="p">{</span>
+			<span class="nx">next</span><span class="p">[</span><span class="nx">w</span><span class="p">]</span> <span class="p">=</span> <span class="nx">c</span> <span class="o">-</span> <span class="nx">w</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">next</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="leetcode-提交记录">Leetcode 提交记录</h3>
+<p><a href="https://leetcode-cn.com/submissions/detail/166887360/">常规算法</a>
+<a href="https://leetcode-cn.com/submissions/detail/166893930/">KMP</a></p>
 
 					</div>
 					<div class="post-comments">
@@ -204,22 +293,22 @@ ababacd</p>
     <h4 class="widget-title">最近提交</h4>
     
     <div class="media">
+      <a class="pull-left" href="https://xiak.com/algorithm/daily-temperatures/">
+        <img class="media-object" src="/images/blog/web-browse.jpg" alt="739. 每日温度">
+      </a>
+      <div class="media-body">
+        <h4 class="media-heading"><a href="https://xiak.com/algorithm/daily-temperatures/">739. 每日温度</a></h4>
+        <p>Leetcode 链接 [739. 每日温度] 题干 请根据每日 气温 列表，重新生成一个列表。</p>
+      </div>
+    </div>
+    
+    <div class="media">
       <a class="pull-left" href="https://xiak.com/algorithm/kmp/">
         <img class="media-object" src="/images/blog/book.jpg" alt="28. 实现 strStr">
       </a>
       <div class="media-body">
         <h4 class="media-heading"><a href="https://xiak.com/algorithm/kmp/">28. 实现 strStr</a></h4>
         <p>Leetcode 链接 28. 实现 strStr 题干 实现 strStr() 函数。 …</p>
-      </div>
-    </div>
-    
-    <div class="media">
-      <a class="pull-left" href="https://xiak.com/algorithm/daily-temperatures/">
-        <img class="media-object" src="/images/blog/web-browse.jpg" alt="739. 每日温度">
-      </a>
-      <div class="media-body">
-        <h4 class="media-heading"><a href="https://xiak.com/algorithm/daily-temperatures/">739. 每日温度</a></h4>
-        <p>Leetcode 链接 739. 每日温度 题干 请根据每日 气温 列表，重新生成一个列表。对</p>
       </div>
     </div>
     
@@ -254,6 +343,7 @@ ababacd</p>
     <ul class="widget-tag-list">
       <li><a href="/tags/devops">Devops</a></li>
       <li><a href="/tags/interview">Interview</a></li>
+      <li><a href="/tags/kmp">Kmp</a></li>
       <li><a href="/tags/leetcode">Leetcode</a></li>
       <li><a href="/tags/linux">Linux</a></li>
       <li><a href="/tags/list">List</a></li>
