@@ -146,9 +146,8 @@
 <p><a href="https://leetcode-cn.com/problems/calculator-lcci/">面试题 16.26. 计算器</a></p>
 <h3 id="题干">题干</h3>
 <p>给定一个包含正整数、加(+)、减(-)、乘(*)、除(/)的算数表达式(括号除外)，计算其结果。</p>
-<p>表达式仅包含非负整数，+， - ，*，/ 四种运算符和空格  。 整数除法仅保留整数部分。</p>
+<p>表达式仅包含非负整数，+， - ，*，/ 四种运算符和空格。 整数除法仅保留整数部分。</p>
 <p>示例 1：</p>
-<p><img src="/images/algorithm/add-two-num-1.jpg" alt="add-two-numbers"></p>
 <pre><code>输入: &quot;3+2*2&quot;
 输出: 7
 </code></pre><p>示例 2：</p>
@@ -165,8 +164,14 @@
 </ul>
 </blockquote>
 <h3 id="思路">思路</h3>
-<p>分析:</p>
-<h3 id="实现">实现</h3>
+<p>用两个栈实现, 一个栈存放操作数, 一个栈存放操作符</p>
+<pre><code>例如 : 3/2 = 1
+
+Stack  A   B
+3 / 2
+    3
+            
+</code></pre><h3 id="实现">实现</h3>
 <div class="highlight"><pre class="chroma"><code class="language-golang" data-lang="golang">
 </code></pre></div><h3 id="benchmark">Benchmark</h3>
 <pre><code>执行用时： ms
